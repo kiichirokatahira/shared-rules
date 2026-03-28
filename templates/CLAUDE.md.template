@@ -1,0 +1,30 @@
+# [プロジェクト名] — Claude Code ルール
+
+## 共通ルール（shared-rules からインポート）
+
+<!-- shared-rules のパスを環境に合わせて変更してください -->
+@C:/Users/kiichiro.katahira/OneDrive - AVANT GROUP/git/shared-rules/rules/folder-structure.md
+@C:/Users/kiichiro.katahira/OneDrive - AVANT GROUP/git/shared-rules/rules/code-conventions.md
+@C:/Users/kiichiro.katahira/OneDrive - AVANT GROUP/git/shared-rules/rules/external-connections.md
+@C:/Users/kiichiro.katahira/OneDrive - AVANT GROUP/git/shared-rules/rules/git-workflow.md
+
+## このプロジェクト固有のルール
+
+<!-- 共通ルールを上書き・追記したい場合はここに記載 -->
+
+### 技術スタック
+
+- （例）言語: TypeScript 5.x
+- （例）フレームワーク: Next.js 14
+- （例）DB: PostgreSQL 16
+
+### 固有のフォルダ構成の補足
+
+<!-- 共通規約との差異があれば記載 -->
+
+### 外部接続先一覧
+
+<!-- このプロジェクト固有の接続先を列挙 -->
+| サービス | 用途 | 環境変数 |
+|---|---|---|
+| （例）Supabase | DB / Auth | `SUPABASE_URL`, `SUPABASE_ANON_KEY` |
