@@ -26,3 +26,28 @@
 
 > Claude Code の `@file` import 構文を使うことで、このリポジトリのルールを
 > 参照先リポジトリのコンテキストに自動で取り込めます。
+
+## AI 駆動開発ワークフロー用テンプレート
+
+`templates/` ディレクトリに AI 駆動開発ワークフロー（Structure.md）の雛形ファイルを格納しています。
+新規プロジェクトのセットアップ時にコピーして使用してください。
+
+| ファイル | 用途 | コピー先 |
+|---|---|---|
+| [templates/CLAUDE.md](templates/CLAUDE.md) | プロジェクト用 Claude Code 指示 | `<project>/CLAUDE.md` |
+| [templates/AGENTS.md](templates/AGENTS.md) | Codex 用指示 | `<project>/AGENTS.md` |
+| [templates/claude-sessions/planner.md](templates/claude-sessions/planner.md) | Planner セッション指示 | `<project>/docs/claude-sessions/planner.md` |
+| [templates/claude-sessions/coder.md](templates/claude-sessions/coder.md) | Coder セッション指示 | `<project>/docs/claude-sessions/coder.md` |
+| [templates/claude-sessions/devops.md](templates/claude-sessions/devops.md) | DevOps セッション指示 | `<project>/docs/claude-sessions/devops.md` |
+| [templates/claude-sessions/reviewer.md](templates/claude-sessions/reviewer.md) | Reviewer セッション指示 | `<project>/docs/claude-sessions/reviewer.md` |
+| [templates/docs/SPEC.md](templates/docs/SPEC.md) | 機能仕様書テンプレート | `<project>/docs/SPEC.md` |
+| [templates/docs/change-request.md](templates/docs/change-request.md) | 変更依頼テンプレート | `<project>/docs/change-requests/YYYY-MM-DD-xxxx.md` |
+
+### 役割別セッションの起動方法
+
+各 Claude セッション開始時に対応する指示ファイルを最初のメッセージで提示してください：
+
+```
+@docs/claude-sessions/planner.md
+変更依頼 docs/change-requests/2026-06-03-xxxx.md を読んで SPEC.md を作成してください。
+```
