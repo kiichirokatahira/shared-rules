@@ -34,20 +34,30 @@
 
 | ファイル | 用途 | コピー先 |
 |---|---|---|
-| [templates/CLAUDE.md](templates/CLAUDE.md) | プロジェクト用 Claude Code 指示 | `<project>/CLAUDE.md` |
+| [templates/CLAUDE.md.template](templates/CLAUDE.md.template) | プロジェクト用 Claude Code 指示 | `<project>/CLAUDE.md` |
 | [templates/AGENTS.md](templates/AGENTS.md) | Codex 用指示 | `<project>/AGENTS.md` |
-| [templates/claude-sessions/planner.md](templates/claude-sessions/planner.md) | Planner セッション指示 | `<project>/docs/claude-sessions/planner.md` |
-| [templates/claude-sessions/coder.md](templates/claude-sessions/coder.md) | Coder セッション指示 | `<project>/docs/claude-sessions/coder.md` |
-| [templates/claude-sessions/devops.md](templates/claude-sessions/devops.md) | DevOps セッション指示 | `<project>/docs/claude-sessions/devops.md` |
-| [templates/claude-sessions/reviewer.md](templates/claude-sessions/reviewer.md) | Reviewer セッション指示 | `<project>/docs/claude-sessions/reviewer.md` |
-| [templates/docs/SPEC.md](templates/docs/SPEC.md) | 機能仕様書テンプレート | `<project>/docs/SPEC.md` |
-| [templates/docs/change-request.md](templates/docs/change-request.md) | 変更依頼テンプレート | `<project>/docs/change-requests/YYYY-MM-DD-xxxx.md` |
+| [templates/x20_変更依頼/step-instructions/020_planning_claude.md](templates/x20_変更依頼/step-instructions/020_planning_claude.md) | Step 020 依頼明確化・仕様策定の指示 | `<project>/docs/step-instructions/020_planning_claude.md` |
+| [templates/x20_変更依頼/step-instructions/030_planning_confirmation_person.md](templates/x20_変更依頼/step-instructions/030_planning_confirmation_person.md) | Step 030 質問への回答手順 | `<project>/docs/step-instructions/030_planning_confirmation_person.md` |
+| [templates/x20_変更依頼/step-instructions/040_planning_check_codex.md](templates/x20_変更依頼/step-instructions/040_planning_check_codex.md) | Step 040 仕様書精査の指示 | `<project>/docs/step-instructions/040_planning_check_codex.md` |
+| [templates/x20_変更依頼/step-instructions/050_implementation_codex.md](templates/x20_変更依頼/step-instructions/050_implementation_codex.md) | Step 050 実装の指示 | `<project>/docs/step-instructions/050_implementation_codex.md` |
+| [templates/x20_変更依頼/step-instructions/060_implementation_claude.md](templates/x20_変更依頼/step-instructions/060_implementation_claude.md) | Step 060 実装レビューの指示 | `<project>/docs/step-instructions/060_implementation_claude.md` |
+| [templates/x20_変更依頼/step-instructions/070_testing_codex.md](templates/x20_変更依頼/step-instructions/070_testing_codex.md) | Step 070 テスト実行の指示 | `<project>/docs/step-instructions/070_testing_codex.md` |
+| [templates/x20_変更依頼/step-instructions/080_review_claude.md](templates/x20_変更依頼/step-instructions/080_review_claude.md) | Step 080 テスト結果レビューの指示 | `<project>/docs/step-instructions/080_review_claude.md` |
+| [templates/x20_変更依頼/step-instructions/090_test_person.md](templates/x20_変更依頼/step-instructions/090_test_person.md) | Step 090 動作確認手順 | `<project>/docs/step-instructions/090_test_person.md` |
+| [templates/x20_変更依頼/step-instructions/100_docs_claude.md](templates/x20_変更依頼/step-instructions/100_docs_claude.md) | Step 100 ドキュメント更新の指示 | `<project>/docs/step-instructions/100_docs_claude.md` |
+| [templates/x20_変更依頼/step-instructions/110_pr_claude.md](templates/x20_変更依頼/step-instructions/110_pr_claude.md) | Step 110 PR 作成の指示 | `<project>/docs/step-instructions/110_pr_claude.md` |
+| [templates/x20_変更依頼/change-request.md](templates/x20_変更依頼/change-request.md) | 変更依頼テンプレート | `<project>/docs/change-requests/010_backlog_person/YYYY-MM-DD-xxxx.md` |
+| [templates/x20_変更依頼/change-requests/](templates/x20_変更依頼/change-requests/) | 変更依頼ステップフォルダ Step 010〜120（`_person`/`_claude`/`_codex` で担当を表示） | `<project>/docs/change-requests/` にコピー |
+| [templates/scripts/list-change-requests.py](templates/scripts/list-change-requests.py) | 変更依頼のステータス一覧を表形式で出力するスクリプト | `<project>/scripts/list-change-requests.py` |
+| [templates/scripts/watch-change-requests.py](templates/scripts/watch-change-requests.py) | change-requests フォルダを監視し `_claude`/`_codex` フォルダへのファイル移動で自動起動するスクリプト | `<project>/scripts/watch-change-requests.py` |
 
-### 役割別セッションの起動方法
+### ステップ別セッションの起動方法
 
-各 Claude セッション開始時に対応する指示ファイルを最初のメッセージで提示してください：
+各 Claude セッション開始時に、変更依頼が置かれているフォルダと同名の指示ファイルを提示してください：
 
 ```
-@docs/claude-sessions/planner.md
-変更依頼 docs/change-requests/2026-06-03-xxxx.md を読んで SPEC.md を作成してください。
+@docs/step-instructions/020_planning_claude.md
+変更依頼 docs/change-requests/020_planning_claude/2026-06-03-xxxx.md を読んで仕様書を作成してください。
 ```
+
+フォルダと指示ファイルが 1:1 対応しているため、変更依頼の現在地から参照する指示ファイルが一目で分かります。
