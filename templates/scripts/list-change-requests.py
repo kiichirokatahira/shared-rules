@@ -2,7 +2,14 @@
 """
 list-change-requests.py
 使い方: python scripts/list-change-requests.py
-オプション: --output-file x20_変更依頼/STATUS.md でファイルに出力
+デフォルト: <change-requests-dir>/STATUS.md に出力
+オプション: --output-file <path> で出力先を変更、--output-file "" で標準出力
+
+フォルダ構造:
+  change-requests/
+    {step_folder}/
+      {cr_name}/                    ← 変更依頼ごとのサブフォルダ
+        change-request.md           ← 依頼書（必須）
 """
 
 import argparse
@@ -11,18 +18,16 @@ import sys
 from pathlib import Path
 
 STATUS_MAP = {
-    "010_backlog_person":               {"label": "草案・未着手",           "assignee": "人間"},
-    "020_planning_claude":              {"label": "依頼明確化・仕様策定中", "assignee": "Claude"},
-    "030_planning_confirmation_person": {"label": "質問への回答待ち",       "assignee": "人間"},
-    "040_planning_check_codex":         {"label": "仕様書精査中",           "assignee": "Codex"},
-    "050_implementation_codex":         {"label": "実装中",                 "assignee": "Codex"},
-    "060_implementation_claude":        {"label": "実装レビュー中",         "assignee": "Claude"},
-    "070_testing_codex":                {"label": "テスト実行中",           "assignee": "Codex"},
-    "080_review_claude":                {"label": "テスト結果レビュー中",   "assignee": "Claude"},
-    "090_test_person":                  {"label": "動作確認中",             "assignee": "人間"},
-    "100_docs_claude":                  {"label": "ドキュメント更新中",     "assignee": "Claude"},
-    "110_pr_claude":                    {"label": "PR 作成中",              "assignee": "Claude"},
-    "120_done_person":                  {"label": "完了・マージ待ち",       "assignee": "人間"},
+    "010_backlog_person":    {"label": "草案・未着手",           "assignee": "人間"},
+    "020_planning_ai":       {"label": "依頼明確化・仕様策定中", "assignee": "AI"},
+    "040_planning_check_ai": {"label": "仕様書精査中",           "assignee": "AI"},
+    "050_implementation_ai": {"label": "実装中",                 "assignee": "AI"},
+    "070_testing_ai":        {"label": "テスト実行中",           "assignee": "AI"},
+    "080_review_ai":         {"label": "テスト結果レビュー中",   "assignee": "AI"},
+    "090_test_person":       {"label": "動作確認中",             "assignee": "人間"},
+    "100_docs_ai":           {"label": "ドキュメント更新中",     "assignee": "AI"},
+    "110_pr_ai":             {"label": "PR 作成中",              "assignee": "AI"},
+    "120_done_person":       {"label": "完了・マージ待ち",       "assignee": "人間"},
 }
 
 
@@ -30,9 +35,11 @@ def main():
     parser = argparse.ArgumentParser(description="変更依頼ステータス一覧を出力")
     parser.add_argument("--change-requests-dir", default="x20_変更依頼/change-requests",
                         help="変更依頼ディレクトリ (default: x20_変更依頼/change-requests)")
-    parser.add_argument("--output-file", default="",
-                        help="出力ファイルパス（省略時は標準出力）")
+    parser.add_argument("--output-file", default=None,
+                        help="出力ファイルパス（省略時は <change-requests-dir>/STATUS.md、\"\" で標準出力）")
     args = parser.parse_args()
+    if args.output_file is None:
+        args.output_file = str(Path(args.change_requests_dir) / "STATUS.md")
 
     cr_dir = Path(args.change_requests_dir)
     if not cr_dir.exists():
@@ -40,31 +47,38 @@ def main():
         sys.exit(1)
 
     rows = []
-    for folder in sorted(cr_dir.iterdir()):
-        if not folder.is_dir():
+    for step_folder in sorted(cr_dir.iterdir()):
+        if not step_folder.is_dir():
             continue
-        folder_name = folder.name
-        for md_file in sorted(folder.glob("*.md")):
-            base_name = md_file.stem
-            date = ""
-            title = base_name
-            m = re.match(r"^(\d{4}-\d{2}-\d{2})-(.+)$", base_name)
+        step_folder_name = step_folder.name
+
+        for cr_subfolder in sorted(step_folder.iterdir()):
+            if not cr_subfolder.is_dir():
+                continue
+            cr_md = cr_subfolder / "change-request.md"
+            if not cr_md.exists():
+                continue
+
+            cr_name = cr_subfolder.name
+            date  = ""
+            title = cr_name
+            m = re.match(r"^(\d{4}-\d{2}-\d{2})-(.+)$", cr_name)
             if m:
-                date = m.group(1)
+                date  = m.group(1)
                 title = m.group(2)
 
-            m2 = re.match(r"^(\d+)_", folder_name)
+            m2   = re.match(r"^(\d+)_", step_folder_name)
             step = int(m2.group(1)) if m2 else 999
 
-            info = STATUS_MAP.get(folder_name, {})
+            info = STATUS_MAP.get(step_folder_name, {})
             rows.append({
                 "step":     step,
                 "date":     date,
                 "title":    title,
-                "status":   info.get("label", folder_name),
+                "status":   info.get("label", step_folder_name),
                 "assignee": info.get("assignee", "-"),
-                "folder":   folder_name,
-                "filename": md_file.name,
+                "folder":   step_folder_name,
+                "cr_name":  cr_name,
             })
 
     if not rows:
@@ -80,7 +94,7 @@ def main():
         "|---|---|---|---|:---:|",
     ]
     for row in rows:
-        link = f"{args.change_requests_dir}/{row['folder']}/{row['filename']}"
+        link = f"{args.change_requests_dir}/{row['folder']}/{row['cr_name']}/change-request.md"
         lines.append(
             f"| [{row['title']}]({link}) | {row['date']} | {row['status']} | {row['assignee']} | {row['step']} |"
         )

@@ -1,25 +1,7 @@
 ## 変更依頼
 
-**ファイル名**: `docs/change-requests/010_backlog_person/YYYY-MM-DD-xxxx.md`
-**作成日**: YYYY-MM-DD
-
-> **ステータス管理**: ファイルを対応するフォルダへ移動することで進捗を表します。
-> サフィックスは次に実行する担当者を示します（`_person` = 人間待ち、`_claude` = Claude 待ち、`_codex` = Codex 待ち）。
->
-> | フォルダ | ステータス | 次の担当 |
-> |---|---|---|
-> | `010_backlog_person/` | 草案・未着手 | 人間が Claude セッションを起動 |
-> | `020_planning_claude/` | 依頼内容の明確化・仕様策定 | Claude Planner |
-> | `030_planning_confirmation_person/` | Claude からの質問への回答待ち | 人間が回答を記入して 020 に戻す |
-> | `040_planning_check_codex/` | 仕様書の技術精査 | Codex |
-> | `050_implementation_codex/` | 実装中 | Codex |
-> | `060_implementation_claude/` | 実装レビュー | Claude Reviewer |
-> | `070_testing_codex/` | テスト実行 | Codex |
-> | `080_review_claude/` | テスト結果レビュー | Claude Reviewer |
-> | `090_test_person/` | 動作確認テスト | 人間 |
-> | `100_docs_claude/` | ドキュメント更新 | Claude |
-> | `110_pr_claude/` | PR 作成 | Claude |
-> | `120_done_person/` | PR 確認・マージ待ち | 人間 |
+**ファイル名**: （Step 020 で自動入力）
+**作成日**: （Step 020 で自動入力）
 
 ---
 

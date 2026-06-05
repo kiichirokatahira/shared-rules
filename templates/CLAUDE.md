@@ -23,23 +23,35 @@
 
 このプロジェクトは以下のワークフローで開発します。各フェーズは専用セッションで実行します。
 
-| ステップ | 担当 | 変更依頼の移動先 | 参照ファイル |
+各変更依頼は **`YYYY-MM-DD-xxxx/` サブフォルダ**単位で管理します。
+フォルダの中に依頼書・テスト結果・ログを格納し、フォルダごと次のステップへ移動します。
+
+```
+change-requests/
+  {step_folder}/
+    YYYY-MM-DD-xxxx/          ← 変更依頼フォルダ（フォルダごと移動）
+      change-request.md       ← 依頼書（常に存在）
+      test-results.md         ← テスト結果（Step 070 で作成）
+      logs/                   ← AI セッションログ（各ステップで保存）
+        020_planning_ai.md
+        ...
+```
+
+| ステップ | 担当 | 変更依頼フォルダの移動先 | 参照ファイル |
 |---|---|---|---|
-| 010: 変更依頼 | 人間 | `010_backlog_person/` | — |
-| 020: 依頼明確化・仕様策定 | Claude Planner | → `020_planning_claude/` | `docs/specs/YYYY-MM-DD-xxxx.md` 作成 |
-| 030: 質問への回答 | 人間 | → `030_planning_confirmation_person/` (→ `020` に戻す) | — |
-| 040: 仕様書精査 | Codex | → `040_planning_check_codex/` | `docs/specs/YYYY-MM-DD-xxxx.md` |
-| 050: 実装 | Codex | → `050_implementation_codex/` | `docs/specs/YYYY-MM-DD-xxxx.md` |
-| 060: 実装レビュー | Claude Reviewer | → `060_implementation_claude/` | `docs/specs/YYYY-MM-DD-xxxx.md`, diff |
-| 070: テスト実行 | Codex | → `070_testing_codex/` | `docs/specs/YYYY-MM-DD-xxxx.md` |
-| 080: テスト結果レビュー | Claude Reviewer | → `080_review_claude/` | `test-results/` |
-| 090: 動作確認 | 人間 | → `090_test_person/` | `docs/specs/YYYY-MM-DD-xxxx.md` |
-| 100: ドキュメント更新 | Claude | → `100_docs_claude/` | `docs/specs/YYYY-MM-DD-xxxx.md` |
-| 110: PR 作成 | Claude | → `110_pr_claude/` | `docs/specs/YYYY-MM-DD-xxxx.md` |
-| 120: マージ | 人間 | → `120_done_person/` | — |
+| 010: 変更依頼作成 | 人間（Planning Mode） | `010_backlog_person/` → `020` | — |
+| 020: 依頼明確化・仕様策定 | AI | → `040_planning_check_ai/`（質問あり→`010`） | `change-request.md`（仕様書追記） |
+| 040: 仕様書精査 | AI | → `050_implementation_ai/`（質問あり→`020`） | `change-request.md` |
+| 050: 実装 | AI | → `070_testing_ai/` | `change-request.md` |
+| 070: テスト実行 | AI | → `080_review_ai/` | `change-request.md` → `test-results.md` 作成 |
+| 080: テスト結果レビュー | AI | → `090_test_person/`（問題あり→`070`） | `test-results.md` |
+| 090: 動作確認 | 人間 | → `100_docs_ai/`（問題あり→`020`） | `change-request.md` |
+| 100: ドキュメント更新 | AI | → `110_pr_ai/` | `change-request.md` |
+| 110: PR 作成 | AI | → `120_done_person/` | `change-request.md` |
+| 120: マージ | 人間 | — | — |
 
 ステップ別の詳細指示: `x20_変更依頼/step-instructions/` ディレクトリを参照してください。
-変更依頼のフォルダ名と指示ファイル名が 1:1 対応しています（例: `020_planning_claude/` → `step-instructions/020_planning_claude.md`）。
+変更依頼のフォルダ名と指示ファイル名が 1:1 対応しています（例: `020_planning_ai/` → `step-instructions/020_planning_ai.md`）。
 
 ### 変更依頼ステータス一覧の確認
 
@@ -55,7 +67,7 @@ python scripts/list-change-requests.py --output-file x20_変更依頼/STATUS.md
 
 ### 変更依頼フォルダの自動監視
 
-`x20_変更依頼/change-requests/` を監視し、`_claude` / `_codex` フォルダにファイルが届いた時点で
+`x20_変更依頼/change-requests/` を監視し、`_ai` フォルダに変更依頼フォルダが届いた時点で
 **変更依頼ごとに git worktree + ブランチを自動作成**してエージェントを起動します:
 
 ```bash
@@ -64,15 +76,31 @@ python scripts/watch-change-requests.py
 
 # 起動時に既存ファイルも処理する場合
 python scripts/watch-change-requests.py --check-existing
+
+# どの AI が各ステップを担当するかをカスタマイズする場合
+python scripts/watch-change-requests.py \
+  --claude-steps "020_planning_ai,080_review_ai,100_docs_ai,110_pr_ai" \
+  --codex-steps  "040_planning_check_ai,050_implementation_ai,070_testing_ai"
 ```
 
 | フォルダ種別 | 動作 |
 |---|---|
-| `_claude` | worktree 作成 → Claude Code を自動起動 |
-| `_codex` | worktree 作成 → Codex を自動起動 |
+| `_ai` | worktree 作成 → 担当 AI を自動起動（デフォルト割り当てはスクリプトのパラメータで制御） |
 | `_person` | 通知メッセージを表示（人間待ち） |
 
-変更依頼ファイルを次のフォルダへ移動するだけで、独立した worktree 上でエージェントが動き出します。
+デフォルトの AI 割り当て:
+
+| ステップ | デフォルト担当 |
+|---|---|
+| 020_planning_ai | Claude |
+| 040_planning_check_ai | Codex |
+| 050_implementation_ai | Codex |
+| 070_testing_ai | Codex |
+| 080_review_ai | Claude |
+| 100_docs_ai | Claude |
+| 110_pr_ai | Claude |
+
+変更依頼フォルダを次のステップへ移動するだけで、独立した worktree 上でエージェントが動き出します。
 複数の変更依頼が並行していても物理フォルダが独立するため、ブランチ切り替えや競合は起きません。
 
 ## ブランチ戦略
@@ -109,22 +137,29 @@ git branch -d feature/ai-YYYY-MM-DD-xxxx
 
 | パス | 用途 |
 |---|---|
-| `docs/specs/` | 変更依頼ごとの仕様書（Claude Planner が作成） |
-| `x20_変更依頼/change-requests/010_backlog_person/` | Step 010: 草案・未着手 |
-| `x20_変更依頼/change-requests/020_planning_claude/` | Step 020: Claude Planner が仕様策定中 |
-| `x20_変更依頼/change-requests/030_planning_confirmation_person/` | Step 030: 人間が質問に回答待ち |
-| `x20_変更依頼/change-requests/040_planning_check_codex/` | Step 040: Codex が仕様精査中 |
-| `x20_変更依頼/change-requests/050_implementation_codex/` | Step 050: Codex が実装中 |
-| `x20_変更依頼/change-requests/060_implementation_claude/` | Step 060: Claude が実装レビュー中 |
-| `x20_変更依頼/change-requests/070_testing_codex/` | Step 070: Codex がテスト中 |
-| `x20_変更依頼/change-requests/080_review_claude/` | Step 080: Claude がテスト結果レビュー中 |
+| `x20_変更依頼/change-requests/010_backlog_person/` | Step 010: 草案・未着手（Planning Mode で精査） |
+| `x20_変更依頼/change-requests/020_planning_ai/` | Step 020: AI が仕様策定中 |
+| `x20_変更依頼/change-requests/040_planning_check_ai/` | Step 040: AI が仕様精査中 |
+| `x20_変更依頼/change-requests/050_implementation_ai/` | Step 050: AI が実装中 |
+| `x20_変更依頼/change-requests/070_testing_ai/` | Step 070: AI がテスト中 |
+| `x20_変更依頼/change-requests/080_review_ai/` | Step 080: AI がテスト結果レビュー中 |
 | `x20_変更依頼/change-requests/090_test_person/` | Step 090: 人間が動作確認中 |
-| `x20_変更依頼/change-requests/100_docs_claude/` | Step 100: Claude がドキュメント更新中 |
-| `x20_変更依頼/change-requests/110_pr_claude/` | Step 110: Claude が PR 作成中 |
+| `x20_変更依頼/change-requests/100_docs_ai/` | Step 100: AI がドキュメント更新中 |
+| `x20_変更依頼/change-requests/110_pr_ai/` | Step 110: AI が PR 作成中 |
 | `x20_変更依頼/change-requests/120_done_person/` | Step 120: 人間が PR 確認・マージ待ち |
-| `x20_変更依頼/step-instructions/` | ステップ別 Claude/Codex 指示（フォルダ名と 1:1 対応） |
-| `test-results/` | テスト結果サマリー（git 管理） |
+| `x20_変更依頼/step-instructions/` | ステップ別 AI 指示（フォルダ名と 1:1 対応） |
 | `.claude/settings.json` | Claude Code 権限・フック設定 |
+
+変更依頼フォルダの内部構造（各 CR フォルダ共通）:
+
+| パス（CR フォルダ内） | 用途 |
+|---|---|
+| `change-request.md` | 依頼書・仕様書（必須） |
+| `test-results.md` | テスト結果サマリー（Step 070 で作成） |
+| `logs/020_planning_ai.md` | Step 020 AI セッションログ（推奨） |
+| `logs/040_planning_check_ai.md` | Step 040 AI セッションログ（推奨） |
+| `logs/070_testing_ai.md` | Step 070 AI セッションログ（推奨） |
+| `logs/080_review_ai.md` | Step 080 AI セッションログ（推奨） |
 
 ## Claude への制約
 
