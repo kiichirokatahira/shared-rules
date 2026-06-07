@@ -40,6 +40,7 @@ STATUS_MAP = {
     "020_planning_ai":       {"label": "依頼明確化・仕様策定", "role": "ai", "default_agent": "claude", "prompt": "変更依頼 {} を読んで仕様書を作成してください。"},
     "040_planning_check_ai": {"label": "仕様書精査",           "role": "ai", "default_agent": "codex",  "prompt": "変更依頼 {} の仕様書を技術精査してください。"},
     "050_implementation_ai": {"label": "実装",                 "role": "ai", "default_agent": "codex",  "prompt": "変更依頼 {} を実装してください。"},
+    "060_infra_person":      {"label": "インフラ事前作業",     "role": "person"},
     "070_testing_ai":        {"label": "テスト実行",           "role": "ai", "default_agent": "codex",  "prompt": "変更依頼 {} のテストを実行してください。"},
     "080_review_ai":         {"label": "テスト結果レビュー",   "role": "ai", "default_agent": "claude", "prompt": "変更依頼 {} のテスト結果をレビューしてください。"},
     "090_test_person":       {"label": "動作確認",             "role": "person"},
