@@ -11,7 +11,7 @@ x20_変更依頼/change-requests/ を監視し、_ai フォルダにファイル
   python scripts/watch-change-requests.py --claude-command "claude --model claude-opus-4-8"
 
 オプション:
-  --auto            Claude に --dangerously-skip-permissions、Codex に --dangerously-bypass-hook-trust を渡して自動実行モードで起動する
+  --auto            Claude に --dangerously-skip-permissions、Codex に --dangerously-bypass-approvals-and-sandbox を渡して自動実行モードで起動する
   --check-existing  起動時に既存ファイルも処理する
   --claude-steps    Claude で実行するステップ名をカンマ区切りで指定（デフォルト: 020_planning_ai,080_review_ai,100_docs_ai,110_pr_ai）
   --codex-steps     Codex で実行するステップ名をカンマ区切りで指定（デフォルト: 040_planning_check_ai,050_implementation_ai,070_testing_ai）
@@ -142,10 +142,16 @@ def start_agent_session(command, worktree_path, cr_full_path, instr_full_path, p
         f"$p = Get-Content -Raw '{tmp_path}' -Encoding UTF8\n"
         f"Remove-Item '{tmp_path}' -ErrorAction SilentlyContinue\n"
         f"& {command} $p\n"
+        f"if ($LASTEXITCODE -ne 0) {{\n"
+        f"    Write-Host ''\n"
+        f"    Write-Host '[エラー] 終了コード: ' $LASTEXITCODE -ForegroundColor Red\n"
+        f"    Write-Host 'エラー内容を確認してから Enter で閉じてください' -ForegroundColor Yellow\n"
+        f"    Read-Host\n"
+        f"}}\n"
     )
     encoded = base64.b64encode(script.encode("utf-16-le")).decode("ascii")
     subprocess.Popen(
-        ["powershell", "-NoExit", "-EncodedCommand", encoded],
+        ["powershell", "-EncodedCommand", encoded],
         creationflags=subprocess.CREATE_NEW_CONSOLE,
     )
 
@@ -157,9 +163,16 @@ def process_file(full_path, project_root, project_name, step_instructions_dir,
     if not full_path.exists():
         return
 
-    folder_name     = full_path.parent.name
+    if full_path.parent.name in STATUS_MAP:
+        folder_name = full_path.parent.name
+        base_name   = full_path.stem
+    elif full_path.parent.parent.name in STATUS_MAP:
+        folder_name = full_path.parent.parent.name
+        base_name   = full_path.parent.name
+    else:
+        return
+
     file_name       = full_path.name
-    base_name       = full_path.stem
     instr_full_path = project_root / step_instructions_dir / f"{folder_name}.md"
 
     info  = STATUS_MAP.get(folder_name, {})
@@ -198,14 +211,14 @@ def main():
     parser.add_argument("--change-requests-dir",   default="x20_変更依頼/change-requests")
     parser.add_argument("--step-instructions-dir", default="x20_変更依頼/step-instructions")
     parser.add_argument("--claude-command",         default="claude")
-    parser.add_argument("--codex-command",          default="codex")
+    parser.add_argument("--codex-command",          default="codex exec")
     parser.add_argument("--claude-steps",           default=DEFAULT_CLAUDE_STEPS,
                         help=f"Claude で実行するステップ名（カンマ区切り、デフォルト: {DEFAULT_CLAUDE_STEPS}）")
     parser.add_argument("--codex-steps",            default=DEFAULT_CODEX_STEPS,
                         help=f"Codex で実行するステップ名（カンマ区切り、デフォルト: {DEFAULT_CODEX_STEPS}）")
     parser.add_argument("--worktree-base-dir",      default="")
     parser.add_argument("--auto",                   action="store_true",
-                        help="Claude に --dangerously-skip-permissions、Codex に --dangerously-bypass-hook-trust を渡して自動実行モードで起動する")
+                        help="Claude に --dangerously-skip-permissions、Codex に --dangerously-bypass-approvals-and-sandbox を渡して自動実行モードで起動する")
     parser.add_argument("--check-existing",         action="store_true",
                         help="起動時に既存ファイルも処理する")
     parser.add_argument("--poll-interval",          type=float, default=30.0,
@@ -216,7 +229,7 @@ def main():
 
     if args.auto:
         args.claude_command = args.claude_command + " --dangerously-skip-permissions"
-        args.codex_command  = args.codex_command  + " --dangerously-bypass-hook-trust"
+        args.codex_command  = args.codex_command  + " --dangerously-bypass-approvals-and-sandbox"
 
     step_agent_map = build_step_agent_map(args.claude_steps, args.codex_steps)
 
@@ -234,9 +247,15 @@ def main():
     if args.check_existing:
         print(f"{C.GRAY}既存のファイルを確認中...{C.RESET}")
     for md_file in sorted(cr_dir.rglob("*.md")):
-        stem   = md_file.stem
-        folder = md_file.parent.name
-        processed[stem] = folder
+        if md_file.parent.name in STATUS_MAP:
+            key    = md_file.stem
+            folder = md_file.parent.name
+        elif md_file.parent.parent.name in STATUS_MAP:
+            key    = md_file.parent.name
+            folder = md_file.parent.parent.name
+        else:
+            continue
+        processed[key] = folder
         if args.check_existing:
             process_file(
                 md_file, project_root, project_name,
@@ -255,10 +274,16 @@ def main():
     try:
         while True:
             for md_file in cr_dir.rglob("*.md"):
-                stem   = md_file.stem
-                folder = md_file.parent.name
-                if processed.get(stem) != folder:
-                    processed[stem] = folder
+                if md_file.parent.name in STATUS_MAP:
+                    key    = md_file.stem
+                    folder = md_file.parent.name
+                elif md_file.parent.parent.name in STATUS_MAP:
+                    key    = md_file.parent.name
+                    folder = md_file.parent.parent.name
+                else:
+                    continue
+                if processed.get(key) != folder:
+                    processed[key] = folder
                     process_file(
                         md_file, project_root, project_name,
                         args.step_instructions_dir, args.claude_command,

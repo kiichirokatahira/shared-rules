@@ -133,6 +133,24 @@ INNER JOIN Department AS d
 SELECT * FROM Employee e, Department d WHERE e.department_id = d.department_id
 ```
 
+### Fabric テーブル作成・変更
+
+- Microsoft Fabric の SQL analytics endpoint では `CREATE TABLE` / `ALTER TABLE` / `DROP TABLE` を直接実行しない
+- テーブルの作成・変更が必要な場合、`CREATE TABLE` 文は Pipeline 用の成果物へ変換して管理する
+- `DB/{DB名}/{スキーマ名}/tables/` 配下に実行用の `CREATE TABLE` SQL を置かない。置く場合は参照用であることをファイル名またはコメントで明示する
+- Pipeline 用成果物には、少なくとも以下を含める
+
+  | 項目 | 内容 |
+  |---|---|
+  | 対象 | ワークスペース、Lakehouse / Warehouse / SQL database、スキーマ、テーブル名 |
+  | カラム定義 | カラム名、型、桁数、精度、小数桁、NULL 許可、既定値の扱い |
+  | 制約 | 主キー・外部キー・一意制約の扱い。Fabric 非対応の場合は「未適用」と理由 |
+  | 作成方法 | Pipeline のアクティビティ、作成モード、既存テーブルがある場合の扱い |
+  | 検証方法 | Pipeline 実行後に確認するテーブル存在、カラム、件数、エラー有無 |
+
+- AI が既存の `CREATE TABLE` 文を変更対象として受け取った場合は、スコープ内の全テーブル定義を Pipeline 用成果物へ変換する
+- オペレーター事前作業は DDL の手動実行ではなく、Pipeline のインポート・設定・実行・結果確認として記載する
+
 ### テーブル設計
 
 - すべてのテーブルに以下の**管理カラムを必ず含める**

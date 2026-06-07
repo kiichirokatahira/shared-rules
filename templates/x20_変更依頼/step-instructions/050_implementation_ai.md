@@ -13,7 +13,7 @@
 >
 > 例: 入力が `/path/to/project/x20_変更依頼/change-requests/050_implementation_ai/2026-06-04-xxx/change-request.md` の場合  
 > - CR フォルダ: `/path/to/project/x20_変更依頼/change-requests/050_implementation_ai/2026-06-04-xxx/`  
-> - 移動先フォルダ: `/path/to/project/x20_変更依頼/change-requests/070_testing_ai/2026-06-04-xxx/`
+> - 移動先フォルダ: `/path/to/project/x20_変更依頼/change-requests/060_infra_person/2026-06-04-xxx/`
 
 ## 手順
 
@@ -22,17 +22,29 @@
 3. 指定された `feature/ai-YYYYMMDD-xxxx` ブランチを作成してチェックアウトする
 4. 仕様書の「変更対象ファイル」のみを実装する
 5. 実装完了後、フィーチャーブランチにコミット・プッシュする
-6. CR フォルダごと `070_testing_ai/` に移動する
+6. `git status` でコミット漏れ・不要ファイルがないか確認する
+   - スコープ外ファイルの変更が含まれていないこと
+   - `.env` 等の認証情報ファイルが含まれていないこと（`.gitignore` を確認する）
+7. CR フォルダごと `060_infra_person/` に移動する
 
    ```bash
    mv /path/to/050_implementation_ai/2026-06-04-xxx \
-      /path/to/070_testing_ai/
+      /path/to/060_infra_person/
    ```
 
 ## 実装前の必須確認
 
 - 仕様書の「スコープ外」セクションに記載されたファイルを**絶対に変更しない**
 - 仕様書に記載のない変更・リファクタリング・機能追加を加えない
+
+## Fabric テーブル定義の実装ルール
+
+- 変更対象に `CREATE TABLE` 文が含まれる場合、SQL analytics endpoint で実行する DDL として実装しない
+- スコープ内のすべての `CREATE TABLE` 文を Pipeline 用成果物へ変換する
+- 変換後の成果物には、対象スキーマ・テーブル名・カラム定義・NULL 許可・型変換・制約の扱い・作成モードを含める
+- Fabric で未対応の制約、既定値、インデックス、型がある場合は、Pipeline 成果物または同階層の README/コメントに理由と代替方針を記載する
+- 参照用に元 SQL を残す場合は、実行対象ではないことをファイル名またはファイル冒頭コメントで明示する
+- `change-request.md` の「オペレーター事前作業」に、Pipeline のインポート・接続設定・実行・確認手順を追記する
 
 ## コミットメッセージ規約
 

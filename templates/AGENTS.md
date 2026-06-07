@@ -18,6 +18,8 @@
 - `rm -rf` の無確認実行禁止
 - TypeScript の `any` 型使用禁止（やむを得ない場合は理由をコメントに記載）
 - SQL の `SELECT *` 禁止（カラム名を明示する）
+- Fabric SQL analytics endpoint へのテーブル `CREATE TABLE` / `ALTER TABLE` / `DROP TABLE` 直接実行禁止
+- テーブル `CREATE TABLE` 文は Pipeline 用成果物へ変換する
 
 ## ブランチ操作
 

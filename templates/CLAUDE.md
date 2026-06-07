@@ -19,6 +19,12 @@
 - データベース：
 - CI/CD：
 
+## Fabric テーブル作成の扱い
+
+Microsoft Fabric の SQL analytics endpoint ではテーブル作成 DDL を直接実行しません。
+`CREATE TABLE` 文を扱う変更依頼では、スコープ内のすべてのテーブル定義を Pipeline 用成果物へ変換し、
+Step 060 で Pipeline のインポート・接続設定・実行確認を行います。
+
 ## AI 駆動開発ワークフロー
 
 このプロジェクトは以下のワークフローで開発します。各フェーズは専用セッションで実行します。
@@ -42,10 +48,11 @@ change-requests/
 | 010: 変更依頼作成 | 人間（Planning Mode） | `010_backlog_person/` → `020` | — |
 | 020: 依頼明確化・仕様策定 | AI | → `040_planning_check_ai/`（質問あり→`010`） | `change-request.md`（仕様書追記） |
 | 040: 仕様書精査 | AI | → `050_implementation_ai/`（質問あり→`020`） | `change-request.md` |
-| 050: 実装 | AI | → `070_testing_ai/` | `change-request.md` |
+| 050: 実装 | AI | → `060_infra_person/` | `change-request.md` |
+| 060: インフラ事前作業 | 人間 | → `070_testing_ai/` | `change-request.md` |
 | 070: テスト実行 | AI | → `080_review_ai/` | `change-request.md` → `test-results.md` 作成 |
 | 080: テスト結果レビュー | AI | → `090_test_person/`（問題あり→`070`） | `test-results.md` |
-| 090: 動作確認 | 人間 | → `100_docs_ai/`（問題あり→`020`） | `change-request.md` |
+| 090: 動作確認 | 人間 | → `100_docs_ai/`（実装バグ→`050`、仕様不備→`020`） | `change-request.md` |
 | 100: ドキュメント更新 | AI | → `110_pr_ai/` | `change-request.md` |
 | 110: PR 作成 | AI | → `120_done_person/` | `change-request.md` |
 | 120: マージ | 人間 | — | — |
@@ -141,6 +148,7 @@ git branch -d feature/ai-YYYY-MM-DD-xxxx
 | `x20_変更依頼/change-requests/020_planning_ai/` | Step 020: AI が仕様策定中 |
 | `x20_変更依頼/change-requests/040_planning_check_ai/` | Step 040: AI が仕様精査中 |
 | `x20_変更依頼/change-requests/050_implementation_ai/` | Step 050: AI が実装中 |
+| `x20_変更依頼/change-requests/060_infra_person/` | Step 060: 人間がインフラ事前作業中 |
 | `x20_変更依頼/change-requests/070_testing_ai/` | Step 070: AI がテスト中 |
 | `x20_変更依頼/change-requests/080_review_ai/` | Step 080: AI がテスト結果レビュー中 |
 | `x20_変更依頼/change-requests/090_test_person/` | Step 090: 人間が動作確認中 |

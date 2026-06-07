@@ -40,6 +40,7 @@
 | [templates/x20_変更依頼/step-instructions/020_planning_ai.md](templates/x20_変更依頼/step-instructions/020_planning_ai.md) | Step 020 依頼明確化・仕様策定の指示 | `<project>/x20_変更依頼/step-instructions/020_planning_ai.md` |
 | [templates/x20_変更依頼/step-instructions/040_planning_check_ai.md](templates/x20_変更依頼/step-instructions/040_planning_check_ai.md) | Step 040 仕様書精査の指示 | `<project>/x20_変更依頼/step-instructions/040_planning_check_ai.md` |
 | [templates/x20_変更依頼/step-instructions/050_implementation_ai.md](templates/x20_変更依頼/step-instructions/050_implementation_ai.md) | Step 050 実装の指示 | `<project>/x20_変更依頼/step-instructions/050_implementation_ai.md` |
+| [templates/x20_変更依頼/step-instructions/060_infra_person.md](templates/x20_変更依頼/step-instructions/060_infra_person.md) | Step 060 インフラ事前作業の指示 | `<project>/x20_変更依頼/step-instructions/060_infra_person.md` |
 | [templates/x20_変更依頼/step-instructions/070_testing_ai.md](templates/x20_変更依頼/step-instructions/070_testing_ai.md) | Step 070 テスト実行の指示 | `<project>/x20_変更依頼/step-instructions/070_testing_ai.md` |
 | [templates/x20_変更依頼/step-instructions/080_review_ai.md](templates/x20_変更依頼/step-instructions/080_review_ai.md) | Step 080 テスト結果レビューの指示 | `<project>/x20_変更依頼/step-instructions/080_review_ai.md` |
 | [templates/x20_変更依頼/step-instructions/090_test_person.md](templates/x20_変更依頼/step-instructions/090_test_person.md) | Step 090 動作確認手順 | `<project>/x20_変更依頼/step-instructions/090_test_person.md` |
