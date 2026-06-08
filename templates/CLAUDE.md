@@ -75,7 +75,7 @@ python scripts/list-change-requests.py --output-file x20_変更依頼/STATUS.md
 ### 変更依頼フォルダの自動監視
 
 `x20_変更依頼/change-requests/` を監視し、`_ai` フォルダに変更依頼フォルダが届いた時点で
-**変更依頼ごとに git worktree + ブランチを自動作成**してエージェントを起動します:
+エージェントをプロジェクトルートで起動します。**1件ずつ処理**するため、処理中の変更依頼（020〜110 のステップ）がある場合、次の変更依頼は自動待機し、完了後に自動起動します:
 
 ```bash
 # 監視開始（起動中はターミナルを開いたままにしてください）
@@ -92,7 +92,7 @@ python scripts/watch-change-requests.py \
 
 | フォルダ種別 | 動作 |
 |---|---|
-| `_ai` | worktree 作成 → 担当 AI を自動起動（デフォルト割り当てはスクリプトのパラメータで制御） |
+| `_ai` | 担当 AI を自動起動（処理中の依頼がある場合は待機、完了後に自動起動） |
 | `_person` | 通知メッセージを表示（人間待ち） |
 
 デフォルトの AI 割り当て:
@@ -107,36 +107,36 @@ python scripts/watch-change-requests.py \
 | 100_docs_ai | Claude |
 | 110_pr_ai | Claude |
 
-変更依頼フォルダを次のステップへ移動するだけで、独立した worktree 上でエージェントが動き出します。
-複数の変更依頼が並行していても物理フォルダが独立するため、ブランチ切り替えや競合は起きません。
+変更依頼フォルダを次のステップへ移動するだけでエージェントが動き出します。
+020〜110 には常に1件のみ存在するため、ブランチ競合やコード干渉は起きません。
 
 ## ブランチ戦略
 
-### worktree による並行開発
+### 1件ずつ処理による直列開発
 
-各変更依頼は **独立した git worktree** 上で作業します。
-`watch-change-requests.py` が自動で worktree とブランチを作成します。
+変更依頼は **1件ずつ**処理します。エージェントはプロジェクトルートで直接作業し、git worktree は使用しません。
 
 ```
-[プロジェクト root]/          ← main / develop（変更依頼ファイルの置き場）
-../[project]-YYYY-MM-DD-A/   ← feature/ai-YYYY-MM-DD-A  ← エージェントAの作業場所
-../[project]-YYYY-MM-DD-B/   ← feature/ai-YYYY-MM-DD-B  ← エージェントBの作業場所
+[プロジェクト root]/          ← 常にここで作業
+  main / develop              ← 変更依頼ファイルの置き場・PR マージ先
+  feature/ai-YYYY-MM-DD-xxxx ← 処理中の変更依頼用ブランチ（1本のみ）
 ```
 
-- 各 worktree は物理的に独立したフォルダなので、ブランチ切り替えが不要
-- 複数エージェントが同時に別ブランチで作業しても互いに干渉しない
-- `main` / `develop` は変更依頼ファイルの管理のみに使い、コードは変更しない
+- Step 050 でエージェントが `feature/ai-YYYY-MM-DD-xxxx` ブランチを作成・チェックアウト
+- Step 050〜110 の間はこのブランチで作業が続く
+- 次の変更依頼は前の変更依頼が 120_done_person（マージ待ち）に移動してから開始
 
 ### ブランチ命名規則
 
 - `main` / `develop`: 保護ブランチ。**直接コミット・プッシュ禁止**
-- `feature/ai-YYYY-MM-DD-xxxx`: 変更依頼ごとの AI 作業ブランチ（worktree と 1:1 対応）
+- `feature/ai-YYYY-MM-DD-xxxx`: 変更依頼ごとの AI 作業ブランチ（同時に1本のみ）
 
-### worktree のライフサイクル
+### マージ後のクリーンアップ（Step 120 完了時）
 
 ```powershell
-# マージ完了後の削除
-git worktree remove ../[project]-YYYY-MM-DD-xxxx
+# PR マージ後にブランチを削除して main に戻す
+git checkout main
+git pull
 git branch -d feature/ai-YYYY-MM-DD-xxxx
 ```
 
@@ -173,7 +173,7 @@ git branch -d feature/ai-YYYY-MM-DD-xxxx
 
 - `main` / `develop` への直接コミットは**禁止**
 - `rm -rf`、`git push --force`、`git reset --hard` は実行前に**必ず確認する**
-- 実装は必ず割り当てられた worktree（`feature/ai-YYYY-MM-DD-xxxx` ブランチ）で行う
-- **他の worktree のファイルを変更しない**（並行作業中の別変更依頼への干渉を防ぐ）
+- 実装は必ず `feature/ai-YYYY-MM-DD-xxxx` ブランチで行う（Step 050 でブランチを作成・チェックアウト）
+- ブランチの切り替えは Step 050 のみ。それ以外のステップでは既存ブランチを維持する
 - セキュリティ上の懸念（OWASP Top 10 等）は実装前に報告する
 - 仕様が不明確な場合は実装を止めて仕様書の `## 確認事項` に質問を記載する

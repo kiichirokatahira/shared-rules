@@ -2,7 +2,7 @@
 """
 watch-change-requests.py
 x20_変更依頼/change-requests/ を監視し、_ai フォルダにファイルが届いたら
-変更依頼ごとに git worktree + ブランチを作成してエージェントを自動起動する
+エージェントを自動起動する（1件ずつ処理）
 
 使い方:
   python scripts/watch-change-requests.py
@@ -16,13 +16,15 @@ x20_変更依頼/change-requests/ を監視し、_ai フォルダにファイル
   --claude-steps    Claude で実行するステップ名をカンマ区切りで指定（デフォルト: 020_planning_ai,080_review_ai,100_docs_ai,110_pr_ai）
   --codex-steps     Codex で実行するステップ名をカンマ区切りで指定（デフォルト: 040_planning_check_ai,050_implementation_ai,070_testing_ai）
 
-worktree の配置場所（デフォルト）:
-  ../[プロジェクト名]-[変更依頼ファイル名のベース]
-  例: ../myproject-2026-06-04-add-user-auth
+処理の順序:
+  同一リポジトリで複数の変更依頼が発生した場合、1件ずつ順番に処理します。
+  020〜110 のステップに変更依頼が存在する間は、次の変更依頼の起動を待機します。
+  現在の変更依頼が 120_done_person に移動するとスクリプトが次を自動で起動します。
 
-worktree の削除（マージ後）:
-  git worktree remove ../myproject-2026-06-04-add-user-auth
-  git branch -d feature/ai-2026-06-04-add-user-auth
+エージェントの実行場所:
+  プロジェクトルートで直接実行します（git worktree は使用しません）。
+  エージェントは Step 050 で feature/ai-YYYY-MM-DD-xxxx ブランチを作成し、
+  Step 120 のマージ後に人間が main へ戻します。
 """
 
 import argparse
@@ -48,6 +50,9 @@ STATUS_MAP = {
     "110_pr_ai":             {"label": "PR 作成",              "role": "ai", "default_agent": "claude", "prompt": "変更依頼 {} に基づき PR を作成してください。"},
     "120_done_person":       {"label": "完了・マージ待ち",     "role": "person"},
 }
+
+# 「処理中」とみなすステップ（010_backlog_person と 120_done_person 以外）
+IN_FLIGHT_STEPS = {k for k in STATUS_MAP if k not in ("010_backlog_person", "120_done_person")}
 
 DEFAULT_CLAUDE_STEPS = "020_planning_ai,080_review_ai,100_docs_ai,110_pr_ai"
 DEFAULT_CODEX_STEPS  = "040_planning_check_ai,050_implementation_ai,070_testing_ai"
@@ -94,41 +99,23 @@ def resolve_agent(folder_name, step_agent_map):
     return info.get("default_agent")
 
 
-def get_worktree_path(base_name, project_root, project_name, worktree_base_dir):
-    base_dir = Path(worktree_base_dir) if worktree_base_dir else project_root.parent
-    return base_dir / f"{project_name}-{base_name}"
+def find_in_flight_cr(cr_dir, exclude_key=None):
+    """020〜110 のステップで処理中の変更依頼を返す（key, folder）。なければ None"""
+    for md_file in sorted(Path(cr_dir).rglob("*.md")):
+        if md_file.parent.name in IN_FLIGHT_STEPS:
+            key    = md_file.stem
+            folder = md_file.parent.name
+        elif md_file.parent.parent.name in IN_FLIGHT_STEPS:
+            key    = md_file.parent.name
+            folder = md_file.parent.parent.name
+        else:
+            continue
+        if key != exclude_key:
+            return key, folder
+    return None
 
 
-def create_worktree(base_name, project_root, project_name, worktree_base_dir):
-    branch_name   = f"feature/ai-{base_name}"
-    worktree_path = get_worktree_path(base_name, project_root, project_name, worktree_base_dir)
-
-    if worktree_path.exists():
-        print(f"       {C.GRAY}worktree 再利用: {worktree_path}{C.RESET}")
-        return worktree_path
-
-    result = subprocess.run(
-        ["git", "-C", str(project_root), "branch", "--list", branch_name],
-        capture_output=True, text=True,
-    )
-    branch_exists = result.stdout.strip() != ""
-
-    if branch_exists:
-        cmd = ["git", "-C", str(project_root), "worktree", "add", str(worktree_path), branch_name]
-    else:
-        cmd = ["git", "-C", str(project_root), "worktree", "add", str(worktree_path), "-b", branch_name]
-
-    result = subprocess.run(cmd, capture_output=True, text=True)
-    if result.returncode != 0:
-        print(f"       {C.RED}[エラー] worktree の作成に失敗しました:{C.RESET}")
-        print(f"       {C.RED}{result.stderr or result.stdout}{C.RESET}")
-        return None
-
-    print(f"       {C.GRAY}worktree 作成: {worktree_path}  (branch: {branch_name}){C.RESET}")
-    return worktree_path
-
-
-def start_agent_session(command, worktree_path, cr_full_path, instr_full_path, prompt_template):
+def start_agent_session(command, project_root, cr_full_path, instr_full_path, prompt_template):
     instr_ref   = "@" + str(instr_full_path).replace("\\", "/")
     cr_path     = str(cr_full_path).replace("\\", "/")
     full_prompt = f"{instr_ref}\n{prompt_template.format(cr_path)}"
@@ -137,9 +124,9 @@ def start_agent_session(command, worktree_path, cr_full_path, instr_full_path, p
         tmp.write(full_prompt)
         tmp_path = tmp.name
 
-    wt_escaped = str(worktree_path).replace("'", "''")
+    root_escaped = str(project_root).replace("'", "''")
     script = (
-        f"Set-Location '{wt_escaped}'\n"
+        f"Set-Location '{root_escaped}'\n"
         f"$p = Get-Content -Raw '{tmp_path}' -Encoding UTF8\n"
         f"Remove-Item '{tmp_path}' -ErrorAction SilentlyContinue\n"
         f"& {command} $p\n"
@@ -157,12 +144,16 @@ def start_agent_session(command, worktree_path, cr_full_path, instr_full_path, p
     )
 
 
-def process_file(full_path, project_root, project_name, step_instructions_dir,
-                 claude_command, codex_command, worktree_base_dir, step_agent_map):
+def process_file(full_path, project_root, cr_dir, step_instructions_dir,
+                 claude_command, codex_command, step_agent_map):
+    """
+    変更依頼ファイルを処理する。
+    戻り値: True = 処理済み（processed に追加する）, False = 待機中（次のポーリングで再試行）
+    """
     if full_path.suffix != ".md":
-        return
+        return True
     if not full_path.exists():
-        return
+        return True
 
     if full_path.parent.name in STATUS_MAP:
         folder_name = full_path.parent.name
@@ -171,7 +162,7 @@ def process_file(full_path, project_root, project_name, step_instructions_dir,
         folder_name = full_path.parent.parent.name
         base_name   = full_path.parent.name
     else:
-        return
+        return True
 
     file_name       = full_path.name
     instr_full_path = project_root / step_instructions_dir / f"{folder_name}.md"
@@ -186,17 +177,24 @@ def process_file(full_path, project_root, project_name, step_instructions_dir,
     if role == "ai":
         if not instr_full_path.exists():
             print(f"       {C.YELLOW}[警告] 指示ファイルが見つかりません: {instr_full_path}{C.RESET}")
-            return
-        wt = create_worktree(base_name, project_root, project_name, worktree_base_dir)
-        if not wt:
-            return
+            return True
+
+        # 1件ずつ処理: 別の変更依頼が処理中の場合は待機
+        in_flight = find_in_flight_cr(cr_dir, exclude_key=base_name)
+        if in_flight:
+            in_flight_key, in_flight_folder = in_flight
+            in_flight_label = STATUS_MAP.get(in_flight_folder, {}).get("label", in_flight_folder)
+            print(f"       {C.YELLOW}[待機] 別の変更依頼が処理中: {in_flight_key} ({in_flight_label}){C.RESET}")
+            print(f"       {C.YELLOW}       完了後に自動で起動します（次回ポーリング時に再確認）{C.RESET}")
+            return False  # processed に追加しない → 次のポーリングで再試行
+
         agent = resolve_agent(folder_name, step_agent_map)
         if agent == "claude":
             print(f"       {C.GREEN}Claude Code を起動します{C.RESET}")
-            start_agent_session(claude_command, wt, full_path, instr_full_path, info["prompt"])
+            start_agent_session(claude_command, project_root, full_path, instr_full_path, info["prompt"])
         elif agent == "codex":
             print(f"       {C.MAGENTA}Codex を起動します{C.RESET}")
-            start_agent_session(codex_command, wt, full_path, instr_full_path, info["prompt"])
+            start_agent_session(codex_command, project_root, full_path, instr_full_path, info["prompt"])
         else:
             print(f"       {C.RED}[エラー] エージェントが解決できません ({folder_name}){C.RESET}")
 
@@ -206,9 +204,11 @@ def process_file(full_path, project_root, project_name, step_instructions_dir,
     else:
         print(f"       {C.RED}不明なフォルダです ({folder_name}){C.RESET}")
 
+    return True
+
 
 def main():
-    parser = argparse.ArgumentParser(description="変更依頼フォルダを監視してエージェントを自動起動")
+    parser = argparse.ArgumentParser(description="変更依頼フォルダを監視してエージェントを自動起動（1件ずつ処理）")
     parser.add_argument("--change-requests-dir",   default="x20_変更依頼/change-requests")
     parser.add_argument("--step-instructions-dir", default="x20_変更依頼/step-instructions")
     parser.add_argument("--claude-command",         default="claude")
@@ -217,7 +217,6 @@ def main():
                         help=f"Claude で実行するステップ名（カンマ区切り、デフォルト: {DEFAULT_CLAUDE_STEPS}）")
     parser.add_argument("--codex-steps",            default=DEFAULT_CODEX_STEPS,
                         help=f"Codex で実行するステップ名（カンマ区切り、デフォルト: {DEFAULT_CODEX_STEPS}）")
-    parser.add_argument("--worktree-base-dir",      default="")
     parser.add_argument("--auto",                   action="store_true",
                         help="Claude に --dangerously-skip-permissions、Codex に --dangerously-bypass-approvals-and-sandbox を渡して自動実行モードで起動する")
     parser.add_argument("--check-existing",         action="store_true",
@@ -235,7 +234,6 @@ def main():
     step_agent_map = build_step_agent_map(args.claude_steps, args.codex_steps)
 
     project_root = Path.cwd()
-    project_name = project_root.name
     cr_dir       = Path(args.change_requests_dir)
 
     if not cr_dir.exists():
@@ -256,13 +254,16 @@ def main():
             folder = md_file.parent.parent.name
         else:
             continue
-        processed[key] = folder
         if args.check_existing:
-            process_file(
-                md_file, project_root, project_name,
+            done = process_file(
+                md_file, project_root, cr_dir,
                 args.step_instructions_dir, args.claude_command,
-                args.codex_command, args.worktree_base_dir, step_agent_map,
+                args.codex_command, step_agent_map,
             )
+            if done:
+                processed[key] = folder
+        else:
+            processed[key] = folder
 
     claude_steps_display = args.claude_steps.replace(",", ", ")
     codex_steps_display  = args.codex_steps.replace(",", ", ")
@@ -270,6 +271,7 @@ def main():
     print(f"{C.GREEN}  Claude → {claude_steps_display}{C.RESET}")
     print(f"{C.MAGENTA}  Codex  → {codex_steps_display}{C.RESET}")
     print(f"{C.YELLOW}  _person → 通知のみ{C.RESET}")
+    print(f"{C.GRAY}  ※ 1件ずつ処理（処理中の依頼がある場合は次の依頼は自動待機）{C.RESET}")
     print(f"{C.GRAY}終了: Ctrl+C{C.RESET}\n")
 
     try:
@@ -284,12 +286,13 @@ def main():
                 else:
                     continue
                 if processed.get(key) != folder:
-                    processed[key] = folder
-                    process_file(
-                        md_file, project_root, project_name,
+                    done = process_file(
+                        md_file, project_root, cr_dir,
                         args.step_instructions_dir, args.claude_command,
-                        args.codex_command, args.worktree_base_dir, step_agent_map,
+                        args.codex_command, step_agent_map,
                     )
+                    if done:
+                        processed[key] = folder
             time.sleep(args.poll_interval)
     except KeyboardInterrupt:
         print(f"\n{C.YELLOW}監視を終了しました。{C.RESET}")
