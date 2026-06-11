@@ -119,17 +119,17 @@ python scripts/watch-change-requests.py \
 ```
 [プロジェクト root]/          ← 常にここで作業
   main / develop              ← 変更依頼ファイルの置き場・PR マージ先
-  feature/ai-YYYY-MM-DD-xxxx ← 処理中の変更依頼用ブランチ（1本のみ）
+  ai-YYYY-MM-DD-xxxx         ← 処理中の変更依頼用ブランチ（1本のみ）
 ```
 
-- Step 050 でエージェントが `feature/ai-YYYY-MM-DD-xxxx` ブランチを作成・チェックアウト
+- Step 050 でエージェントが `ai-YYYY-MM-DD-xxxx` ブランチを作成・チェックアウト
 - Step 050〜110 の間はこのブランチで作業が続く
 - 次の変更依頼は前の変更依頼が 120_done_person（マージ待ち）に移動してから開始
 
 ### ブランチ命名規則
 
 - `main` / `develop`: 保護ブランチ。**直接コミット・プッシュ禁止**
-- `feature/ai-YYYY-MM-DD-xxxx`: 変更依頼ごとの AI 作業ブランチ（同時に1本のみ）
+- `ai-YYYY-MM-DD-xxxx`: 変更依頼ごとの AI 作業ブランチ（同時に1本のみ）
 
 ### マージ後のクリーンアップ（Step 120 完了時）
 
@@ -137,7 +137,7 @@ python scripts/watch-change-requests.py \
 # PR マージ後にブランチを削除して main に戻す
 git checkout main
 git pull
-git branch -d feature/ai-YYYY-MM-DD-xxxx
+git branch -d ai-YYYY-MM-DD-xxxx
 ```
 
 ## 重要ファイル・ディレクトリ
@@ -173,7 +173,7 @@ git branch -d feature/ai-YYYY-MM-DD-xxxx
 
 - `main` / `develop` への直接コミットは**禁止**
 - `rm -rf`、`git push --force`、`git reset --hard` は実行前に**必ず確認する**
-- 実装は必ず `feature/ai-YYYY-MM-DD-xxxx` ブランチで行う（Step 050 でブランチを作成・チェックアウト）
+- 実装は必ず `ai-YYYY-MM-DD-xxxx` ブランチで行う（Step 050 でブランチを作成・チェックアウト）
 - ブランチの切り替えは Step 050 のみ。それ以外のステップでは既存ブランチを維持する
 - セキュリティ上の懸念（OWASP Top 10 等）は実装前に報告する
 - 仕様が不明確な場合は実装を止めて仕様書の `## 確認事項` に質問を記載する

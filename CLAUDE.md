@@ -51,6 +51,8 @@
 | [templates/scripts/list-change-requests.py](templates/scripts/list-change-requests.py) | 変更依頼のステータス一覧を表形式で出力するスクリプト | `<project>/scripts/list-change-requests.py` |
 | [templates/scripts/watch-change-requests.py](templates/scripts/watch-change-requests.py) | change-requests フォルダを監視し `_ai` フォルダへの変更依頼フォルダ移動で自動起動するスクリプト | `<project>/scripts/watch-change-requests.py` |
 | [templates/SETUP.md](templates/SETUP.md) | Claude Code・Codex のインストール手順（事前準備ガイド） | `<project>/SETUP.md` |
+| [templates/x30_仕様書/index.md](templates/x30_仕様書/index.md) | 仕様書フォルダ インデックスノート（Obsidian MOC） | `<project>/x30_仕様書/index.md` |
+| [templates/x30_仕様書/CORE_XX/spec-template.md](templates/x30_仕様書/CORE_XX/spec-template.md) | 仕様書テンプレート（Obsidian frontmatter 付き） | `<project>/x30_仕様書/CORE_XX/<name>.md` |
 
 ### ステップ別セッションの起動方法
 

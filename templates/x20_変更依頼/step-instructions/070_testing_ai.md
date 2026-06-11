@@ -34,7 +34,7 @@
 2. フィーチャーブランチをチェックアウトする
 
    ```bash
-   git checkout feature/ai-YYYYMMDD-xxxx
+   git checkout ai-YYYYMMDD-xxxx
    ```
 
 3. 受け入れ基準に基づきテストを実装・実行する
@@ -56,7 +56,7 @@
 
 **実行日時**: YYYY-MM-DD HH:MM
 **対象変更依頼**: x20_変更依頼/change-requests/070_testing_ai/YYYY-MM-DD-xxxx/change-request.md
-**ブランチ**: feature/ai-YYYYMMDD-xxxx
+**ブランチ**: ai-YYYYMMDD-xxxx
 
 ## 受け入れ基準テスト
 

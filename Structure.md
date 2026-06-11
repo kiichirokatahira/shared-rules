@@ -64,7 +64,7 @@ project-a/
 
 ```
 main / develop ブランチ    ← 保護。AI は直接触らない
- └─ feature/ai-YYYYMMDD-xxxx   ← AI が作業するブランチ
+ └─ ai-YYYYMMDD-xxxx           ← AI が作業するブランチ
 ```
 
 - `.claude/settings.json` で許可コマンドをホワイトリスト化する
@@ -175,7 +175,7 @@ Step 120: マージ                 [人間]             → 120_done_person/
 
 変更依頼ファイルを `050_implementation_codex/` へ移動し、Codex に実装を依頼する。
 
-- `feature/ai-YYYYMMDD-xxxx` ブランチを作成して作業する
+- `ai-YYYYMMDD-xxxx` ブランチを作成して作業する
 - `main` / `develop` への直接コミットは禁止
 - 実装完了後、フィーチャーブランチにプッシュし `060_implementation_claude/` へ移動
 

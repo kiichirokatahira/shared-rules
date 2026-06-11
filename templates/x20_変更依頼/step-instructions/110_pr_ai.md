@@ -22,8 +22,8 @@
 2. フィーチャーブランチの変更サマリーを確認する
 
    ```bash
-   git log main..feature/ai-YYYYMMDD-xxxx --oneline
-   git diff main..feature/ai-YYYYMMDD-xxxx --stat
+   git log main..ai-YYYYMMDD-xxxx --oneline
+   git diff main..ai-YYYYMMDD-xxxx --stat
    ```
 
 3. GitHub CLI で PR を作成する

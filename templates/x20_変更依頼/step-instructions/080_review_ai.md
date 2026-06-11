@@ -25,7 +25,7 @@
 3. フィーチャーブランチの変更内容を確認する
 
    ```bash
-   git diff main..feature/ai-YYYYMMDD-xxxx
+   git diff main..ai-YYYYMMDD-xxxx
    ```
 
 4. 下記チェックリストでレビューを行い、判定を決める
