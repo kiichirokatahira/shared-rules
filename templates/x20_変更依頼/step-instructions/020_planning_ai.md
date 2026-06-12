@@ -14,12 +14,12 @@
 > AI はプロジェクトのメインディレクトリで起動されます。カレントディレクトリからの相対パスは使えません。  
 > プロンプトで受け取った変更依頼ファイルの絶対パスを基点に、すべてのパスを導出してください。  
 >
-> 例: 入力が `/path/to/project/x20_変更依頼/change-requests/020_planning_ai/2026-06-04-xxx/change-request.md` の場合  
+> 例: 入力が `/path/to/project/x20_変更依頼/change-requests/020_planning_ai/20260604-xxx/change-request.md` の場合  
 > - プロジェクトルート: `/path/to/project/`  
-> - CR フォルダ: `/path/to/project/x20_変更依頼/change-requests/020_planning_ai/2026-06-04-xxx/`  
+> - CR フォルダ: `/path/to/project/x20_変更依頼/change-requests/020_planning_ai/20260604-xxx/`  
 > - 仕様書の追記先: `change-request.md`（変更依頼ファイルそのもの）  
-> - 移動先フォルダ（質問なし）: `/path/to/project/x20_変更依頼/change-requests/040_planning_check_ai/2026-06-04-xxx/`  
-> - 移動先フォルダ（質問あり）: `/path/to/project/x20_変更依頼/change-requests/010_backlog_person/2026-06-04-xxx/`
+> - 移動先フォルダ（質問なし）: `/path/to/project/x20_変更依頼/change-requests/040_planning_check_ai/20260604-xxx/`  
+> - 移動先フォルダ（質問あり）: `/path/to/project/x20_変更依頼/change-requests/010_backlog_person/20260604-xxx/`
 
 ## 手順
 
@@ -39,12 +39,12 @@
    | インターフェース整合性 | 関数シグネチャ・型定義が既存コードと矛盾しないか |
    | スコープ漏れ | 変更対象に記載されていないが影響を受けるファイルがないか |
    | 受け入れ基準の具体性 | テストとして実行可能な条件が記載されているか |
-   | Fabric テーブル作成 | `CREATE TABLE` 文を直接実行する仕様になっておらず、Pipeline 用成果物へ変換する仕様になっているか |
+
 
 6. CR フォルダごと `040_planning_check_ai/` に**絶対パスで**移動する
 
    ```bash
-   mv /path/to/020_planning_ai/2026-06-04-xxx \
+   mv /path/to/020_planning_ai/20260604-xxx \
       /path/to/040_planning_check_ai/
    ```
 
@@ -54,7 +54,7 @@
 5. CR フォルダごと `010_backlog_person/` に**絶対パスで**移動する
 
    ```bash
-   mv /path/to/020_planning_ai/2026-06-04-xxx \
+   mv /path/to/020_planning_ai/20260604-xxx \
       /path/to/010_backlog_person/
    ```
 
@@ -72,8 +72,8 @@
 
 変更依頼ファイルを書き直す際は以下を行ってください:
 
-- `**ファイル名**`: 入力ファイルの**プロジェクトルートからの相対パス**を記載する（例: `x20_変更依頼/change-requests/020_planning_ai/2026-06-04-xxx/change-request.md`）
-- `**作成日**`: 今日の日付（YYYY-MM-DD 形式）を記載する
+- `**ファイル名**`: 入力ファイルの**プロジェクトルートからの相対パス**を記載する（例: `x20_変更依頼/change-requests/020_planning_ai/20260604-xxx/change-request.md`）
+- `**作成日**`: 今日の日付（YYYYMMDD 形式）を記載する
 - 各セクションの記述を、箇条書きや体言止めで簡潔に整える（意味は変えない）
 - ステータス管理の説明 blockquote（`>` で始まる段落とテーブル）は**削除してよい**（ファイルの移動先で管理されるため）
 
@@ -87,14 +87,6 @@
 | エンドツーエンド検証手順 | 手順を番号リストで記載 |
 | オペレーター事前作業 | Pipeline のインポート・設定・実行など、人間が事前に行う作業 |
 
-### Fabric テーブル定義を含む依頼の仕様化ルール
-
-- 依頼に `CREATE TABLE` 文が含まれる場合、手動 DDL 実行ではなく Pipeline 用成果物への変換を仕様に含める
-- 仕様書の「変更対象ファイル」には、変換元 SQL と変換後の Pipeline 定義ファイルを両方記載する
-- 仕様書の「オペレーター事前作業」には、Pipeline のインポート・接続設定・実行・結果確認を記載する
-- スコープ内に複数の `CREATE TABLE` 文がある場合、すべてを変換対象として明記する
-- SQL analytics endpoint に対する `CREATE TABLE` 実行を前提にしない
-
 ## 仕様書テンプレート
 
 変更依頼ファイルの末尾に以下を追記してください:
@@ -104,7 +96,7 @@
 
 ## 機能仕様書
 
-**作成日**: YYYY-MM-DD
+**作成日**: YYYYMMDD
 
 ### 概要
 

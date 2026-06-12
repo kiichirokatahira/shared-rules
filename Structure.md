@@ -28,7 +28,7 @@ Windows (ホスト)
 project-a/
  ├─ src/                                    ← プログラム本体
  ├─ docs/
- │   ├─ specs/                              ← 変更依頼ごとの仕様書（YYYY-MM-DD-xxxx.md）
+ │   ├─ specs/                              ← 変更依頼ごとの仕様書（YYYYMMDD-xxxx.md）
  │   └─ change-requests/                    ← 変更依頼ファイル（フォルダ位置＝進捗ステータス）
  │       ├─ 010_backlog_person/             ← 草案・未着手
  │       ├─ 020_planning_claude/            ← Claude Planner が仕様策定中
@@ -53,7 +53,7 @@ project-a/
 
 | ファイル | 対象 AI | 内容 |
 |---|---|---|
-| `docs/specs/YYYY-MM-DD-xxxx.md` | Claude Code / Codex | 変更依頼ごとの仕様書。機能仕様・実装対象ファイル・スコープ外・検証手順を網羅した自己完結型 |
+| `docs/specs/YYYYMMDD-xxxx.md` | Claude Code / Codex | 変更依頼ごとの仕様書。機能仕様・実装対象ファイル・スコープ外・検証手順を網羅した自己完結型 |
 | `AGENTS.md` | Codex | コーディング規約・禁止操作・テスト実行コマンド。グローバル／リポジトリ／ディレクトリの3階層で読み込まれ、近いファイルが優先される |
 
 > **注意**: AGENTS.md はグローバルスコープ（`~/.codex/`）の読み込みバグが報告されており（GitHub Issue #8759 等）、リポジトリ直下への配置を優先する。
@@ -112,7 +112,7 @@ Step 120: マージ                 [人間]             → 120_done_person/
 
 #### Step 010｜変更依頼の作成（人間）
 
-変更依頼ファイルを `docs/change-requests/010_backlog_person/YYYY-MM-DD-xxxx.md` に作成する：
+変更依頼ファイルを `docs/change-requests/010_backlog_person/YYYYMMDD-xxxx.md` に作成する：
 
 ```markdown
 ## 変更依頼
@@ -141,7 +141,7 @@ Step 120: マージ                 [人間]             → 120_done_person/
 
 **質問がない場合（依頼内容が明確）**：
 
-- `docs/specs/YYYY-MM-DD-xxxx.md` を作成する
+- `docs/specs/YYYYMMDD-xxxx.md` を作成する
 - 変更依頼ファイルを `040_planning_check_codex/` へ移動する
 
 仕様書に含める内容：変更対象ファイル・インターフェース・スコープ外・受け入れ基準・エンドツーエンド検証手順
@@ -198,7 +198,7 @@ Step 120: マージ                 [人間]             → 120_done_person/
 
 - 受け入れ基準に基づきテストを実装・実行する
 - 既存テストのリグレッションチェックを実施する
-- テスト結果サマリーを `test-results/YYYY-MM-DD-xxxx.md` に保存してコミットする
+- テスト結果サマリーを `test-results/YYYYMMDD-xxxx.md` に保存してコミットする
 - 完了後 `080_review_claude/` へ移動
 
 ---

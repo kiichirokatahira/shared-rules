@@ -3,10 +3,10 @@
 ## 共通ルール（shared-rules からインポート）
 
 <!-- shared-rules のパスを環境に合わせて変更してください -->
-@C:/Users/kiichiro.katahira/OneDrive - AVANT GROUP/git/shared-rules/rules/folder-structure.md
-@C:/Users/kiichiro.katahira/OneDrive - AVANT GROUP/git/shared-rules/rules/code-conventions.md
-@C:/Users/kiichiro.katahira/OneDrive - AVANT GROUP/git/shared-rules/rules/external-connections.md
-@C:/Users/kiichiro.katahira/OneDrive - AVANT GROUP/git/shared-rules/rules/git-workflow.md
+@C:/Users/kiichiro.katahira.AD/OneDrive - AVANT GROUP/git/shared-rules/rules/folder-structure.md
+@C:/Users/kiichiro.katahira.AD/OneDrive - AVANT GROUP/git/shared-rules/rules/code-conventions.md
+@C:/Users/kiichiro.katahira.AD/OneDrive - AVANT GROUP/git/shared-rules/rules/external-connections.md
+@C:/Users/kiichiro.katahira.AD/OneDrive - AVANT GROUP/git/shared-rules/rules/git-workflow.md
 
 ## このプロジェクト固有のルール
 

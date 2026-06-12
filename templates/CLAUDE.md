@@ -29,13 +29,13 @@ Step 060 で Pipeline のインポート・接続設定・実行確認を行い�
 
 このプロジェクトは以下のワークフローで開発します。各フェーズは専用セッションで実行します。
 
-各変更依頼は **`YYYY-MM-DD-xxxx/` サブフォルダ**単位で管理します。
+各変更依頼は **`YYYYMMDD-xxxx/` サブフォルダ**単位で管理します。
 フォルダの中に依頼書・テスト結果・ログを格納し、フォルダごと次のステップへ移動します。
 
 ```
 change-requests/
   {step_folder}/
-    YYYY-MM-DD-xxxx/          ← 変更依頼フォルダ（フォルダごと移動）
+    YYYYMMDD-xxxx/          ← 変更依頼フォルダ（フォルダごと移動）
       change-request.md       ← 依頼書（常に存在）
       test-results.md         ← テスト結果（Step 070 で作成）
       logs/                   ← AI セッションログ（各ステップで保存）
@@ -119,17 +119,17 @@ python scripts/watch-change-requests.py \
 ```
 [プロジェクト root]/          ← 常にここで作業
   main / develop              ← 変更依頼ファイルの置き場・PR マージ先
-  ai-YYYY-MM-DD-xxxx         ← 処理中の変更依頼用ブランチ（1本のみ）
+  ai-YYYYMMDD-xxxx         ← 処理中の変更依頼用ブランチ（1本のみ）
 ```
 
-- Step 050 でエージェントが `ai-YYYY-MM-DD-xxxx` ブランチを作成・チェックアウト
+- Step 050 でエージェントが `ai-YYYYMMDD-xxxx` ブランチを作成・チェックアウト
 - Step 050〜110 の間はこのブランチで作業が続く
 - 次の変更依頼は前の変更依頼が 120_done_person（マージ待ち）に移動してから開始
 
 ### ブランチ命名規則
 
 - `main` / `develop`: 保護ブランチ。**直接コミット・プッシュ禁止**
-- `ai-YYYY-MM-DD-xxxx`: 変更依頼ごとの AI 作業ブランチ（同時に1本のみ）
+- `ai-YYYYMMDD-xxxx`: 変更依頼ごとの AI 作業ブランチ（同時に1本のみ）
 
 ### マージ後のクリーンアップ（Step 120 完了時）
 
@@ -137,7 +137,7 @@ python scripts/watch-change-requests.py \
 # PR マージ後にブランチを削除して main に戻す
 git checkout main
 git pull
-git branch -d ai-YYYY-MM-DD-xxxx
+git branch -d ai-YYYYMMDD-xxxx
 ```
 
 ## 重要ファイル・ディレクトリ
@@ -173,7 +173,7 @@ git branch -d ai-YYYY-MM-DD-xxxx
 
 - `main` / `develop` への直接コミットは**禁止**
 - `rm -rf`、`git push --force`、`git reset --hard` は実行前に**必ず確認する**
-- 実装は必ず `ai-YYYY-MM-DD-xxxx` ブランチで行う（Step 050 でブランチを作成・チェックアウト）
+- 実装は必ず `ai-YYYYMMDD-xxxx` ブランチで行う（Step 050 でブランチを作成・チェックアウト）
 - ブランチの切り替えは Step 050 のみ。それ以外のステップでは既存ブランチを維持する
 - セキュリティ上の懸念（OWASP Top 10 等）は実装前に報告する
 - 仕様が不明確な場合は実装を止めて仕様書の `## 確認事項` に質問を記載する

@@ -23,7 +23,7 @@ x20_変更依頼/change-requests/ を監視し、_ai フォルダにファイル
 
 エージェントの実行場所:
   プロジェクトルートで直接実行します（git worktree は使用しません）。
-  エージェントは Step 050 で feature/ai-YYYY-MM-DD-xxxx ブランチを作成し、
+  エージェントは Step 050 で feature/ai-YYYYMMDD-xxxx ブランチを作成し、
   Step 120 のマージ後に人間が main へ戻します。
 """
 

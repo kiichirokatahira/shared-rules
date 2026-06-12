@@ -11,10 +11,10 @@
 > **パス解決の注意（重要）**  
 > プロンプトで受け取った変更依頼ファイルの絶対パスを基点に、すべてのパスを導出してください。  
 >
-> 例: 入力が `/path/to/project/x20_変更依頼/change-requests/040_planning_check_ai/2026-06-04-xxx/change-request.md` の場合  
-> - CR フォルダ: `/path/to/project/x20_変更依頼/change-requests/040_planning_check_ai/2026-06-04-xxx/`  
-> - 移動先フォルダ（問題なし）: `/path/to/project/x20_変更依頼/change-requests/050_implementation_ai/2026-06-04-xxx/`  
-> - 移動先フォルダ（問題あり）: `/path/to/project/x20_変更依頼/change-requests/020_planning_ai/2026-06-04-xxx/`
+> 例: 入力が `/path/to/project/x20_変更依頼/change-requests/040_planning_check_ai/20260604-xxx/change-request.md` の場合  
+> - CR フォルダ: `/path/to/project/x20_変更依頼/change-requests/040_planning_check_ai/20260604-xxx/`  
+> - 移動先フォルダ（問題なし）: `/path/to/project/x20_変更依頼/change-requests/050_implementation_ai/20260604-xxx/`  
+> - 移動先フォルダ（問題あり）: `/path/to/project/x20_変更依頼/change-requests/020_planning_ai/20260604-xxx/`
 
 ## 手順
 
@@ -26,19 +26,11 @@
 | インターフェース整合性 | 関数シグネチャ・型定義が既存コードと矛盾しないか |
 | スコープ漏れ | 変更対象に記載されていないが影響を受けるファイルがないか |
 | 受け入れ基準の具体性 | テストとして実行可能な条件が記載されているか |
-| Fabric テーブル作成 | `CREATE TABLE` の手動実行ではなく Pipeline 用成果物への変換になっているか |
 
 > **精査は1パスで全指摘を網羅すること**
 > チェックリストの全観点を確認してから差し戻すこと。
 > 問題が複数ある場合は**すべてをまとめて** `## AI 精査コメント` に記載してから020へ差し戻す。
 > 1項目ずつ差し戻すと020↔040のループ回数が増え、仕様策定が長期化する。
-
-Fabric テーブル定義を含む仕様では、以下も確認する:
-
-- スコープ内のすべての `CREATE TABLE` 文が Pipeline 用成果物への変換対象として列挙されている
-- SQL analytics endpoint へ `CREATE TABLE` を直接実行する手順が含まれていない
-- Pipeline の接続先、対象テーブル、作成モード、既存テーブルがある場合の扱いが明記されている
-- Fabric で未対応の制約・既定値・インデックスがある場合、代替または未適用理由が記載されている
 
 2. 判定を決める
 
@@ -47,7 +39,7 @@ Fabric テーブル定義を含む仕様では、以下も確認する:
 CR フォルダごと `050_implementation_ai/` に移動する。
 
 ```bash
-mv /path/to/040_planning_check_ai/2026-06-04-xxx \
+mv /path/to/040_planning_check_ai/20260604-xxx \
    /path/to/050_implementation_ai/
 ```
 
@@ -57,7 +49,7 @@ mv /path/to/040_planning_check_ai/2026-06-04-xxx \
 問題点・質問を箇条書きで記載してから CR フォルダごと `020_planning_ai/` に移動する。
 
 ```bash
-mv /path/to/040_planning_check_ai/2026-06-04-xxx \
+mv /path/to/040_planning_check_ai/20260604-xxx \
    /path/to/020_planning_ai/
 ```
 

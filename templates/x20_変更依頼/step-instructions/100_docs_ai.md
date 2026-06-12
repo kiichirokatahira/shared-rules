@@ -11,9 +11,9 @@
 > **パス解決の注意（重要）**  
 > プロンプトで受け取った変更依頼ファイルの絶対パスを基点に、すべてのパスを導出してください。  
 >
-> 例: 入力が `/path/to/project/x20_変更依頼/change-requests/100_docs_ai/2026-06-04-xxx/change-request.md` の場合  
-> - CR フォルダ: `/path/to/project/x20_変更依頼/change-requests/100_docs_ai/2026-06-04-xxx/`  
-> - 移動先フォルダ: `/path/to/project/x20_変更依頼/change-requests/110_pr_ai/2026-06-04-xxx/`
+> 例: 入力が `/path/to/project/x20_変更依頼/change-requests/100_docs_ai/20260604-xxx/change-request.md` の場合  
+> - CR フォルダ: `/path/to/project/x20_変更依頼/change-requests/100_docs_ai/20260604-xxx/`  
+> - 移動先フォルダ: `/path/to/project/x20_変更依頼/change-requests/110_pr_ai/20260604-xxx/`
 
 ## 手順
 
@@ -28,7 +28,7 @@
 3. CR フォルダごと `110_pr_ai/` に**絶対パスで**移動する
 
    ```bash
-   mv /path/to/100_docs_ai/2026-06-04-xxx \
+   mv /path/to/100_docs_ai/20260604-xxx \
       /path/to/110_pr_ai/
    ```
 
@@ -39,7 +39,7 @@
 ```
 docs: ドキュメントを実装内容に同期
 
-Refs: x20_変更依頼/change-requests/100_docs_ai/YYYY-MM-DD-xxxx/change-request.md
+Refs: x20_変更依頼/change-requests/100_docs_ai/YYYYMMDD-xxxx/change-request.md
 ```
 
 ## 制約

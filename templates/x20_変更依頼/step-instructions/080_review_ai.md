@@ -12,11 +12,11 @@
 > **パス解決の注意（重要）**  
 > プロンプトで受け取った変更依頼ファイルの絶対パスを基点に、すべてのパスを導出してください。  
 >
-> 例: 入力が `/path/to/project/x20_変更依頼/change-requests/080_review_ai/2026-06-04-xxx/change-request.md` の場合  
-> - CR フォルダ: `/path/to/project/x20_変更依頼/change-requests/080_review_ai/2026-06-04-xxx/`  
-> - テスト結果: `/path/to/project/x20_変更依頼/change-requests/080_review_ai/2026-06-04-xxx/test-results.md`  
-> - 移動先フォルダ（問題なし）: `/path/to/project/x20_変更依頼/change-requests/090_test_person/2026-06-04-xxx/`  
-> - 移動先フォルダ（問題あり）: `/path/to/project/x20_変更依頼/change-requests/070_testing_ai/2026-06-04-xxx/`
+> 例: 入力が `/path/to/project/x20_変更依頼/change-requests/080_review_ai/20260604-xxx/change-request.md` の場合  
+> - CR フォルダ: `/path/to/project/x20_変更依頼/change-requests/080_review_ai/20260604-xxx/`  
+> - テスト結果: `/path/to/project/x20_変更依頼/change-requests/080_review_ai/20260604-xxx/test-results.md`  
+> - 移動先フォルダ（問題なし）: `/path/to/project/x20_変更依頼/change-requests/090_test_person/20260604-xxx/`  
+> - 移動先フォルダ（問題あり）: `/path/to/project/x20_変更依頼/change-requests/070_testing_ai/20260604-xxx/`
 
 ## 手順
 
@@ -48,7 +48,7 @@
 CR フォルダごと `090_test_person/` に**絶対パスで**移動する。
 
 ```bash
-mv /path/to/080_review_ai/2026-06-04-xxx \
+mv /path/to/080_review_ai/20260604-xxx \
    /path/to/090_test_person/
 ```
 
@@ -58,7 +58,7 @@ mv /path/to/080_review_ai/2026-06-04-xxx \
 修正内容を記載してから CR フォルダごと `070_testing_ai/` に**絶対パスで**移動する。
 
 ```bash
-mv /path/to/080_review_ai/2026-06-04-xxx \
+mv /path/to/080_review_ai/20260604-xxx \
    /path/to/070_testing_ai/
 ```
 

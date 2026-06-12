@@ -60,7 +60,7 @@
 
 ```
 @x20_変更依頼/step-instructions/020_planning_ai.md
-変更依頼 x20_変更依頼/change-requests/020_planning_ai/2026-06-03-xxxx/change-request.md を読んで仕様書を作成してください。
+変更依頼 x20_変更依頼/change-requests/020_planning_ai/20260603-xxxx/change-request.md を読んで仕様書を作成してください。
 ```
 
 フォルダと指示ファイルが 1:1 対応しているため、変更依頼の現在地から参照する指示ファイルが一目で分かります。

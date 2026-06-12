@@ -11,9 +11,9 @@
 > **パス解決の注意（重要）**  
 > プロンプトで受け取った変更依頼ファイルの絶対パスを基点に、すべてのパスを導出してください。  
 >
-> 例: 入力が `/path/to/project/x20_変更依頼/change-requests/050_implementation_ai/2026-06-04-xxx/change-request.md` の場合  
-> - CR フォルダ: `/path/to/project/x20_変更依頼/change-requests/050_implementation_ai/2026-06-04-xxx/`  
-> - 移動先フォルダ: `/path/to/project/x20_変更依頼/change-requests/060_infra_person/2026-06-04-xxx/`
+> 例: 入力が `/path/to/project/x20_変更依頼/change-requests/050_implementation_ai/20260604-xxx/change-request.md` の場合  
+> - CR フォルダ: `/path/to/project/x20_変更依頼/change-requests/050_implementation_ai/20260604-xxx/`  
+> - 移動先フォルダ: `/path/to/project/x20_変更依頼/change-requests/060_infra_person/20260604-xxx/`
 
 ## 手順
 
@@ -21,32 +21,33 @@
 2. 仕様書の「スコープ外」セクションを確認し、変更禁止ファイルを把握する
 3. プロジェクトの CLAUDE.md に定義されたブランチ命名規則に従い、この変更依頼用のブランチを作成してチェックアウトする
    - 現在のブランチが既に作業ブランチの場合はそのまま使用する（watch スクリプトが事前作成した場合など）
-   - CLAUDE.md に命名規則の記載がない場合は `ai-YYYY-MM-DD-xxxx` を使用する
+   - CLAUDE.md に命名規則の記載がない場合は `ai-YYYYMMDD-xxxx` を使用する
 4. 仕様書の「変更対象ファイル」のみを実装する
 5. 実装完了後、フィーチャーブランチにコミット・プッシュする
 6. `git status` でコミット漏れ・不要ファイルがないか確認する
    - スコープ外ファイルの変更が含まれていないこと
    - `.env` 等の認証情報ファイルが含まれていないこと（`.gitignore` を確認する）
-7. CR フォルダごと `060_infra_person/` に移動する
+
+### 人の設定が必要→ `060_infra_person/`に移動
+7-a. CR フォルダごと `060_infra_person/` に移動する
 
    ```bash
-   mv /path/to/050_implementation_ai/2026-06-04-xxx \
+   mv /path/to/050_implementation_ai/20260604-xxx \
       /path/to/060_infra_person/
+   ```
+
+### 人の設定が不要→ `070_testing_ai/`に移動
+7-b. CR フォルダごと `070_testing_ai` に移動する
+
+   ```bash
+   mv /path/to/050_implementation_ai/20260604-xxx \
+      /path/to/070_testing_ai/
    ```
 
 ## 実装前の必須確認
 
 - 仕様書の「スコープ外」セクションに記載されたファイルを**絶対に変更しない**
 - 仕様書に記載のない変更・リファクタリング・機能追加を加えない
-
-## Fabric テーブル定義の実装ルール
-
-- 変更対象に `CREATE TABLE` 文が含まれる場合、SQL analytics endpoint で実行する DDL として実装しない
-- スコープ内のすべての `CREATE TABLE` 文を Pipeline 用成果物へ変換する
-- 変換後の成果物には、対象スキーマ・テーブル名・カラム定義・NULL 許可・型変換・制約の扱い・作成モードを含める
-- Fabric で未対応の制約、既定値、インデックス、型がある場合は、Pipeline 成果物または同階層の README/コメントに理由と代替方針を記載する
-- 参照用に元 SQL を残す場合は、実行対象ではないことをファイル名またはファイル冒頭コメントで明示する
-- `change-request.md` の「オペレーター事前作業」に、Pipeline のインポート・接続設定・実行・確認手順を追記する
 
 ## コミットメッセージ規約
 
@@ -55,7 +56,7 @@ feat(scope): 変更内容の概要
 
 なぜこの変更が必要か（任意。仕様書の概要から引用可）
 
-Refs: x20_変更依頼/change-requests/050_implementation_ai/YYYY-MM-DD-xxxx/change-request.md
+Refs: x20_変更依頼/change-requests/050_implementation_ai/YYYYMMDD-xxxx/change-request.md
 ```
 
 ## 制約

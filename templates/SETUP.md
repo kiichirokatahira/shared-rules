@@ -162,5 +162,5 @@ python scripts/watch-change-requests.py --auto
 python scripts/watch-change-requests.py --auto --check-existing
 ```
 
-`_ai` フォルダ（`020_planning_ai/` など）に変更依頼フォルダ（`YYYY-MM-DD-xxxx/`）を移動すると、
+`_ai` フォルダ（`020_planning_ai/` など）に変更依頼フォルダ（`YYYYMMDD-xxxx/`）を移動すると、
 worktree の作成とエージェントの起動が自動で行われます。
