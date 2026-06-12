@@ -5,7 +5,7 @@ $sharedRulesRoot = $PSScriptRoot | Split-Path -Parent
 
 # 同期対象リポジトリのリスト（環境に合わせて追加・編集してください）
 $targetRepos = @(
-    "C:/Users/kiichiro.katahira.AD/OneDrive - AVANT GROUP/gitag-groupit-dwh-azurefunction",
+    "C:/Users/kiichiro.katahira.AD/OneDrive - AVANT GROUP/git/ag-groupit-dwh-azurefunction",
     "C:/Users/kiichiro.katahira.AD/OneDrive - AVANT GROUP/git/ag-groupit-dwh-fabric-it"
 )
 
