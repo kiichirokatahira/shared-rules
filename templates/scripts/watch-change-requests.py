@@ -217,10 +217,10 @@ def main():
                         help=f"Claude で実行するステップ名（カンマ区切り、デフォルト: {DEFAULT_CLAUDE_STEPS}）")
     parser.add_argument("--codex-steps",            default=DEFAULT_CODEX_STEPS,
                         help=f"Codex で実行するステップ名（カンマ区切り、デフォルト: {DEFAULT_CODEX_STEPS}）")
-    parser.add_argument("--auto",                   action="store_true",
-                        help="Claude に --dangerously-skip-permissions、Codex に --dangerously-bypass-approvals-and-sandbox を渡して自動実行モードで起動する")
-    parser.add_argument("--check-existing",         action="store_true",
-                        help="起動時に既存ファイルも処理する")
+    parser.add_argument("--auto",                   action="store_true", default=True,
+                        help="Claude に --dangerously-skip-permissions、Codex に --dangerously-bypass-approvals-and-sandbox を渡して自動実行モードで起動する（デフォルト: 有効）")
+    parser.add_argument("--check-existing",         action="store_true", default=True,
+                        help="起動時に既存ファイルも処理する（デフォルト: 有効）")
     parser.add_argument("--poll-interval",          type=float, default=30.0,
                         help="監視ポーリング間隔（秒, default: 30.0）")
     args = parser.parse_args()

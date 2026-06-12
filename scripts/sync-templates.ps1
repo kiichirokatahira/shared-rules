@@ -1,4 +1,4 @@
-# shared-rules の scripts/ を各リポジトリへ同期するスクリプト
+﻿# shared-rules の scripts/ を各リポジトリへ同期するスクリプト
 # 使い方: powershell -File scripts/sync-templates.ps1
 
 $sharedRulesRoot = $PSScriptRoot | Split-Path -Parent
