@@ -23,21 +23,21 @@
    - 現在のブランチが既に作業ブランチの場合はそのまま使用する（watch スクリプトが事前作成した場合など）
    - CLAUDE.md に命名規則の記載がない場合は `ai-YYYYMMDD-xxxx` を使用する
 4. 仕様書の「変更対象ファイル」のみを実装する
-5. 実装完了後、フィーチャーブランチにコミット・プッシュする
+5. 実装完了後、作業ブランチにコミット・プッシュする
 6. `git status` でコミット漏れ・不要ファイルがないか確認する
    - スコープ外ファイルの変更が含まれていないこと
    - `.env` 等の認証情報ファイルが含まれていないこと（`.gitignore` を確認する）
-
-### 人の設定が必要→ `060_infra_person/`に移動
-7-a. CR フォルダごと `060_infra_person/` に移動する
+7. 判定
+### 人の設定が必要な場合 → `060_infra_person/`に移動
+CR フォルダごと `060_infra_person/` に移動する
 
    ```bash
    mv /path/to/050_implementation_ai/20260604-xxx \
       /path/to/060_infra_person/
    ```
 
-### 人の設定が不要→ `070_testing_ai/`に移動
-7-b. CR フォルダごと `070_testing_ai` に移動する
+### 人の設定が不要な場合 → `070_testing_ai/`に移動
+CR フォルダごと `070_testing_ai` に移動する
 
    ```bash
    mv /path/to/050_implementation_ai/20260604-xxx \
