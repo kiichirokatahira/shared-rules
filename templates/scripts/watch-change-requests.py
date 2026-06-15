@@ -101,7 +101,7 @@ def resolve_agent(folder_name, step_agent_map):
 
 def find_in_flight_cr(cr_dir, exclude_key=None):
     """020〜110 のステップで処理中の変更依頼を返す（key, folder）。なければ None"""
-    for md_file in sorted(Path(cr_dir).rglob("*.md")):
+    for md_file in sorted(Path(cr_dir).rglob("change-request.md")):
         if md_file.parent.name in IN_FLIGHT_STEPS:
             key    = md_file.stem
             folder = md_file.parent.name
@@ -245,7 +245,7 @@ def main():
 
     if args.check_existing:
         print(f"{C.GRAY}既存のファイルを確認中...{C.RESET}")
-    for md_file in sorted(cr_dir.rglob("*.md")):
+    for md_file in sorted(cr_dir.rglob("change-request.md")):
         if md_file.parent.name in STATUS_MAP:
             key    = md_file.stem
             folder = md_file.parent.name
@@ -276,7 +276,7 @@ def main():
 
     try:
         while True:
-            for md_file in cr_dir.rglob("*.md"):
+            for md_file in cr_dir.rglob("change-request.md"):
                 if md_file.parent.name in STATUS_MAP:
                     key    = md_file.stem
                     folder = md_file.parent.name
