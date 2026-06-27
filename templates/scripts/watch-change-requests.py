@@ -6,11 +6,14 @@ x20_変更依頼/change-requests/ を監視し、_ai フォルダにファイル
 
 使い方:
   python scripts/watch-change-requests.py
+  python scripts/watch-change-requests.py --cr-repo ../myproject-cr
   python scripts/watch-change-requests.py --auto
   python scripts/watch-change-requests.py --auto --check-existing
   python scripts/watch-change-requests.py --claude-command "claude --model claude-opus-4-8"
 
 オプション:
+  --cr-repo          変更依頼リポジトリのパス（省略時はカレントディレクトリ）
+                     プロジェクトリポジトリとは別に CR リポジトリを分離している場合に指定する
   --auto             Claude に --dangerously-skip-permissions、Codex に --dangerously-bypass-approvals-and-sandbox を渡して自動実行モードで起動する
   --check-existing   起動時に既存ファイルも処理する
   --claude-steps     Claude で実行するステップ名をカンマ区切りで指定（デフォルト: 020_planning_ai,080_review_ai,100_docs_ai,110_pr_ai）
@@ -24,8 +27,9 @@ x20_変更依頼/change-requests/ を監視し、_ai フォルダにファイル
   現在の変更依頼が 120_done_person に移動するとスクリプトが次を自動で起動します。
 
 エージェントの実行場所:
-  プロジェクトルートで直接実行します（git worktree は使用しません）。
-  エージェントは Step 050 で feature/ai-YYYYMMDD-xxxx ブランチを作成し、
+  プロジェクトリポジトリのルート（カレントディレクトリ）で直接実行します（git worktree は使用しません）。
+  変更依頼ファイルの絶対パスは CR リポジトリを指します（--cr-repo 指定時）。
+  エージェントは Step 050 で ai-YYYYMMDD-xxxx ブランチを作成し、
   Step 120 のマージ後に人間が main へ戻します。
 """
 
@@ -148,7 +152,7 @@ def start_agent_session(command, project_root, cr_full_path, instr_full_path, pr
     )
 
 
-def process_file(full_path, project_root, cr_dir, step_instructions_dir,
+def process_file(full_path, project_root, cr_dir, step_instructions_base,
                  claude_command, codex_command, step_agent_map):
     """
     変更依頼ファイルを処理する。
@@ -169,7 +173,7 @@ def process_file(full_path, project_root, cr_dir, step_instructions_dir,
         return True
 
     file_name       = full_path.name
-    instr_full_path = project_root / step_instructions_dir / f"{folder_name}.md"
+    instr_full_path = step_instructions_base / f"{folder_name}.md"
 
     info  = STATUS_MAP.get(folder_name, {})
     label = info.get("label", folder_name)
@@ -213,6 +217,8 @@ def process_file(full_path, project_root, cr_dir, step_instructions_dir,
 
 def main():
     parser = argparse.ArgumentParser(description="変更依頼フォルダを監視してエージェントを自動起動（1件ずつ処理）")
+    parser.add_argument("--cr-repo",                default=None,
+                        help="変更依頼リポジトリのパス（省略時はカレントディレクトリ）")
     parser.add_argument("--change-requests-dir",   default="x20_変更依頼/change-requests")
     parser.add_argument("--step-instructions-dir", default="x20_変更依頼/step-instructions")
     parser.add_argument("--claude-command",         default="claude")
@@ -240,7 +246,9 @@ def main():
     step_agent_map = build_step_agent_map(args.claude_steps, args.codex_steps)
 
     project_root = Path.cwd()
-    cr_dir       = Path(args.change_requests_dir)
+    cr_repo      = Path(args.cr_repo).resolve() if args.cr_repo else project_root
+    cr_dir       = cr_repo / args.change_requests_dir
+    step_instructions_base = cr_repo / args.step_instructions_dir
 
     if not cr_dir.exists():
         print(f"ディレクトリが見つかりません: {cr_dir}", file=sys.stderr)
@@ -265,7 +273,7 @@ def main():
         if args.check_existing:
             done = process_file(
                 md_file, project_root, cr_dir,
-                args.step_instructions_dir, args.claude_command,
+                step_instructions_base, args.claude_command,
                 args.codex_command, step_agent_map,
             )
             if done:
@@ -303,7 +311,7 @@ def main():
                         print(f"\n{C.YELLOW}[リトライ] {key} が {elapsed // 60} 分間 {folder} に留まっているため再起動します{C.RESET}")
                     done = process_file(
                         md_file, project_root, cr_dir,
-                        args.step_instructions_dir, args.claude_command,
+                        step_instructions_base, args.claude_command,
                         args.codex_command, step_agent_map,
                     )
                     if done:

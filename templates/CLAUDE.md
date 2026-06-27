@@ -29,6 +29,30 @@ Step 060 で Pipeline のインポート・接続設定・実行確認を行い�
 
 このプロジェクトは以下のワークフローで開発します。各フェーズは専用セッションで実行します。
 
+### リポジトリ構成（2リポジトリ推奨）
+
+変更依頼・仕様書はコードとは**別リポジトリ**で管理します。
+
+```
+[project-repo]/         ← コードリポジトリ（このリポジトリ）
+  src/
+  x30_仕様書/           ← 仕様書（コードと同じリポジトリで管理）
+  CLAUDE.md
+  scripts/              ← watch / list スクリプト
+  ...
+
+[project-cr-repo]/      ← 変更依頼リポジトリ（常に main で管理）
+  x20_変更依頼/
+    change-requests/
+    step-instructions/
+```
+
+- **project-repo**: コード＋仕様書。`ai-YYYYMMDD-xxxx` ブランチで変更管理
+- **project-cr-repo**: 変更依頼のみ。ブランチを切らず常に `main` に直接コミット
+
+> watch スクリプトはプロジェクトリポジトリのルートから起動します。  
+> `--cr-repo` で変更依頼リポジトリのパスを渡すと、2つのリポジトリを跨いで動作します。
+
 各変更依頼は **`YYYYMMDD-xxxx/` サブフォルダ**単位で管理します。
 フォルダの中に依頼書・テスト結果・ログを格納し、フォルダごと次のステップへ移動します。
 
@@ -65,27 +89,27 @@ change-requests/
 全変更依頼のステータスをまとめた表を出力するには以下を実行してください:
 
 ```bash
-# ターミナルに表示
-python scripts/list-change-requests.py
+# ターミナルに表示（CR リポジトリが別の場合）
+python scripts/list-change-requests.py --cr-repo ../myproject-cr
 
 # ファイルに保存
-python scripts/list-change-requests.py --output-file x20_変更依頼/STATUS.md
+python scripts/list-change-requests.py --cr-repo ../myproject-cr --output-file ../myproject-cr/x20_変更依頼/STATUS.md
 ```
 
 ### 変更依頼フォルダの自動監視
 
-`x20_変更依頼/change-requests/` を監視し、`_ai` フォルダに変更依頼フォルダが届いた時点で
-エージェントをプロジェクトルートで起動します。**1件ずつ処理**するため、処理中の変更依頼（020〜110 のステップ）がある場合、次の変更依頼は自動待機し、完了後に自動起動します:
+CR リポジトリの `x20_変更依頼/change-requests/` を監視し、`_ai` フォルダに変更依頼フォルダが届いた時点で
+エージェントを**プロジェクトリポジトリのルート**で起動します。**1件ずつ処理**するため、処理中の変更依頼（020〜110 のステップ）がある場合、次の変更依頼は自動待機し、完了後に自動起動します:
 
 ```bash
-# 監視開始（起動中はターミナルを開いたままにしてください）
-python scripts/watch-change-requests.py
+# 監視開始（CR リポジトリが別の場合）
+python scripts/watch-change-requests.py --cr-repo ../myproject-cr
 
 # 起動時に既存ファイルも処理する場合
-python scripts/watch-change-requests.py --check-existing
+python scripts/watch-change-requests.py --cr-repo ../myproject-cr --check-existing
 
 # どの AI が各ステップを担当するかをカスタマイズする場合
-python scripts/watch-change-requests.py \
+python scripts/watch-change-requests.py --cr-repo ../myproject-cr \
   --claude-steps "020_planning_ai,080_review_ai,100_docs_ai,110_pr_ai" \
   --codex-steps  "040_planning_check_ai,050_implementation_ai,070_testing_ai"
 ```
@@ -114,33 +138,40 @@ python scripts/watch-change-requests.py \
 
 ### 1件ずつ処理による直列開発
 
-変更依頼は **1件ずつ**処理します。エージェントはプロジェクトルートで直接作業し、git worktree は使用しません。
+変更依頼は **1件ずつ**処理します。エージェントはプロジェクトリポジトリのルートで直接作業し、git worktree は使用しません。
 
 ```
-[プロジェクト root]/          ← 常にここで作業
-  main / develop              ← 変更依頼ファイルの置き場・PR マージ先
-  ai-YYYYMMDD-xxxx         ← 処理中の変更依頼用ブランチ（1本のみ）
+[project-repo]/               ← エージェントの作業場所（cwd）
+  main / develop              ← PR マージ先
+  ai-YYYYMMDD-xxxx            ← 処理中の変更依頼用ブランチ（1本のみ）
+
+[project-cr-repo]/            ← 変更依頼・仕様書の置き場
+  main                        ← 常にここへ直接コミット（ブランチを切らない）
 ```
 
-- Step 050 でエージェントが `ai-YYYYMMDD-xxxx` ブランチを作成・チェックアウト
-- Step 050〜110 の間はこのブランチで作業が続く
+- Step 050 でエージェントが project-repo に `ai-YYYYMMDD-xxxx` ブランチを作成・チェックアウト
+- Step 050〜110 の間はこのブランチでコード変更が続く
+- CR ファイル（ChangeRequest.md、test-results.md、x30_仕様書/）は project-cr-repo の main に直接コミット
 - 次の変更依頼は前の変更依頼が 120_done_person（マージ待ち）に移動してから開始
 
 ### ブランチ命名規則
 
-- `main` / `develop`: 保護ブランチ。**直接コミット・プッシュ禁止**
-- `ai-YYYYMMDD-xxxx`: 変更依頼ごとの AI 作業ブランチ（同時に1本のみ）
+- project-repo の `main` / `develop`: 保護ブランチ。**直接コミット・プッシュ禁止**
+- project-repo の `ai-YYYYMMDD-xxxx`: 変更依頼ごとの AI 作業ブランチ（同時に1本のみ）
+- project-cr-repo は常に `main` へ直接コミット（ブランチ不使用）
 
 ### マージ後のクリーンアップ（Step 120 完了時）
 
 ```powershell
-# PR マージ後にブランチを削除して main に戻す
+# project-repo: PR マージ後にブランチを削除して main に戻す
 git checkout main
 git pull
 git branch -d ai-YYYYMMDD-xxxx
 ```
 
 ## 重要ファイル・ディレクトリ
+
+### project-cr-repo（変更依頼リポジトリ）
 
 | パス | 用途 |
 |---|---|
@@ -156,6 +187,14 @@ git branch -d ai-YYYYMMDD-xxxx
 | `x20_変更依頼/change-requests/110_pr_ai/` | Step 110: AI が PR 作成中 |
 | `x20_変更依頼/change-requests/120_done_person/` | Step 120: 人間が PR 確認・マージ待ち |
 | `x20_変更依頼/step-instructions/` | ステップ別 AI 指示（フォルダ名と 1:1 対応） |
+
+### project-repo（コードリポジトリ、このリポジトリ）
+
+| パス | 用途 |
+|---|---|
+| `x30_仕様書/` | 仕様書（Obsidian で管理） |
+| `scripts/watch-change-requests.py` | 変更依頼フォルダ監視スクリプト |
+| `scripts/list-change-requests.py` | 変更依頼ステータス一覧スクリプト |
 | `.claude/settings.json` | Claude Code 権限・フック設定 |
 
 変更依頼フォルダの内部構造（各 CR フォルダ共通）:
@@ -171,9 +210,10 @@ git branch -d ai-YYYYMMDD-xxxx
 
 ## Claude への制約
 
-- `main` / `develop` への直接コミットは**禁止**
+- **project-repo**: `main` / `develop` への直接コミットは**禁止**
+- **project-repo**: コード変更は必ず `ai-YYYYMMDD-xxxx` ブランチで行う（Step 050 でブランチを作成・チェックアウト）
+- **project-repo**: ブランチの切り替えは Step 050 のみ。それ以外のステップでは既存ブランチを維持する
+- **project-cr-repo**: ブランチを切らず、常に `main` へ直接コミットする
 - `rm -rf`、`git push --force`、`git reset --hard` は実行前に**必ず確認する**
-- 実装は必ず `ai-YYYYMMDD-xxxx` ブランチで行う（Step 050 でブランチを作成・チェックアウト）
-- ブランチの切り替えは Step 050 のみ。それ以外のステップでは既存ブランチを維持する
 - セキュリティ上の懸念（OWASP Top 10 等）は実装前に報告する
 - 仕様が不明確な場合は実装を止めて仕様書の `## 確認事項` に質問を記載する

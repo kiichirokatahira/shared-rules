@@ -11,9 +11,13 @@
 > **パス解決の注意（重要）**  
 > プロンプトで受け取った変更依頼ファイルの絶対パスを基点に、すべてのパスを導出してください。  
 >
-> 例: 入力が `/path/to/project/x20_変更依頼/change-requests/100_docs_ai/20260604-xxx/ChangeRequest.md` の場合  
-> - CR フォルダ: `/path/to/project/x20_変更依頼/change-requests/100_docs_ai/20260604-xxx/`  
-> - 移動先フォルダ: `/path/to/project/x20_変更依頼/change-requests/110_pr_ai/20260604-xxx/`
+> 例: 入力が `/path/to/cr-repo/x20_変更依頼/change-requests/100_docs_ai/20260604-xxx/ChangeRequest.md` の場合  
+> - CR フォルダ: `/path/to/cr-repo/x20_変更依頼/change-requests/100_docs_ai/20260604-xxx/`  
+> - 移動先フォルダ: `/path/to/cr-repo/x20_変更依頼/change-requests/110_pr_ai/20260604-xxx/`
+>
+> **2リポジトリ構成の場合**  
+> - `x30_仕様書/`・`README.md`・`AGENTS.md` の更新: **プロジェクトリポジトリ**（カレントディレクトリ）の `ai-YYYYMMDD-xxxx` ブランチにコミット  
+> - フォルダ移動: **CR リポジトリ**（上記絶対パス）で操作し、`main` へ直接コミット
 
 ## 手順
 

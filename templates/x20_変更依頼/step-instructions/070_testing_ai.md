@@ -11,11 +11,15 @@
 > **パス解決の注意（重要）**  
 > プロンプトで受け取った変更依頼ファイルの絶対パスを基点に、すべてのパスを導出してください。  
 >
-> 例: 入力が `/path/to/project/x20_変更依頼/change-requests/070_testing_ai/20260604-xxx/ChangeRequest.md` の場合  
-> - CR フォルダ: `/path/to/project/x20_変更依頼/change-requests/070_testing_ai/20260604-xxx/`  
-> - テスト結果の保存先: `/path/to/project/x20_変更依頼/change-requests/070_testing_ai/20260604-xxx/test-results.md`  
-> - ログの保存先: `/path/to/project/x20_変更依頼/change-requests/070_testing_ai/20260604-xxx/logs/070_testing_ai.md`  
-> - 移動先フォルダ: `/path/to/project/x20_変更依頼/change-requests/080_review_ai/20260604-xxx/`
+> 例: 入力が `/path/to/cr-repo/x20_変更依頼/change-requests/070_testing_ai/20260604-xxx/ChangeRequest.md` の場合  
+> - CR フォルダ: `/path/to/cr-repo/x20_変更依頼/change-requests/070_testing_ai/20260604-xxx/`  
+> - テスト結果の保存先: `/path/to/cr-repo/x20_変更依頼/change-requests/070_testing_ai/20260604-xxx/test-results.md`  
+> - ログの保存先: `/path/to/cr-repo/x20_変更依頼/change-requests/070_testing_ai/20260604-xxx/logs/070_testing_ai.md`  
+> - 移動先フォルダ: `/path/to/cr-repo/x20_変更依頼/change-requests/080_review_ai/20260604-xxx/`
+>
+> **2リポジトリ構成の場合**  
+> - `test-results.md` の保存・フォルダ移動: **CR リポジトリ**（上記絶対パス）で操作し、`main` へ直接コミット  
+> - `git checkout ai-YYYYMMDD-xxxx` やテスト実行: **プロジェクトリポジトリ**（カレントディレクトリ）で行う
 
 ## テスト種別と判定基準
 
