@@ -36,7 +36,7 @@ Step 060 で Pipeline のインポート・接続設定・実行確認を行い�
 change-requests/
   {step_folder}/
     YYYYMMDD-xxxx/          ← 変更依頼フォルダ（フォルダごと移動）
-      change-request.md       ← 依頼書（常に存在）
+      ChangeRequest.md       ← 依頼書（常に存在）
       test-results.md         ← テスト結果（Step 070 で作成）
       logs/                   ← AI セッションログ（各ステップで保存）
         020_planning_ai.md
@@ -46,15 +46,15 @@ change-requests/
 | ステップ | 担当 | 変更依頼フォルダの移動先 | 参照ファイル |
 |---|---|---|---|
 | 010: 変更依頼作成 | 人間（Planning Mode） | `010_backlog_person/` → `020` | — |
-| 020: 依頼明確化・仕様策定 | AI | → `040_planning_check_ai/`（質問あり→`010`） | `change-request.md`（仕様書追記） |
-| 040: 仕様書精査 | AI | → `050_implementation_ai/`（質問あり→`020`） | `change-request.md` |
-| 050: 実装 | AI | → `060_infra_person/` | `change-request.md` |
-| 060: インフラ事前作業 | 人間 | → `070_testing_ai/` | `change-request.md` |
-| 070: テスト実行 | AI | → `080_review_ai/` | `change-request.md` → `test-results.md` 作成 |
+| 020: 依頼明確化・仕様策定 | AI | → `040_planning_check_ai/`（質問あり→`010`） | `ChangeRequest.md`（仕様書追記） |
+| 040: 仕様書精査 | AI | → `050_implementation_ai/`（質問あり→`020`） | `ChangeRequest.md` |
+| 050: 実装 | AI | → `060_infra_person/` | `ChangeRequest.md` |
+| 060: インフラ事前作業 | 人間 | → `070_testing_ai/` | `ChangeRequest.md` |
+| 070: テスト実行 | AI | → `080_review_ai/` | `ChangeRequest.md` → `test-results.md` 作成 |
 | 080: テスト結果レビュー | AI | → `090_test_person/`（問題あり→`070`） | `test-results.md` |
-| 090: 動作確認 | 人間 | → `100_docs_ai/`（実装バグ→`050`、仕様不備→`020`） | `change-request.md` |
-| 100: ドキュメント更新 | AI | → `110_pr_ai/` | `change-request.md` |
-| 110: PR 作成 | AI | → `120_done_person/` | `change-request.md` |
+| 090: 動作確認 | 人間 | → `100_docs_ai/`（実装バグ→`050`、仕様不備→`020`） | `ChangeRequest.md` |
+| 100: ドキュメント更新 | AI | → `110_pr_ai/` | `ChangeRequest.md` |
+| 110: PR 作成 | AI | → `120_done_person/` | `ChangeRequest.md` |
 | 120: マージ | 人間 | — | — |
 
 ステップ別の詳細指示: `x20_変更依頼/step-instructions/` ディレクトリを参照してください。
@@ -162,7 +162,7 @@ git branch -d ai-YYYYMMDD-xxxx
 
 | パス（CR フォルダ内） | 用途 |
 |---|---|
-| `change-request.md` | 依頼書・仕様書（必須） |
+| `ChangeRequest.md` | 依頼書・仕様書（必須） |
 | `test-results.md` | テスト結果サマリー（Step 070 で作成） |
 | `logs/020_planning_ai.md` | Step 020 AI セッションログ（推奨） |
 | `logs/040_planning_check_ai.md` | Step 040 AI セッションログ（推奨） |

@@ -11,10 +11,12 @@ x20_変更依頼/change-requests/ を監視し、_ai フォルダにファイル
   python scripts/watch-change-requests.py --claude-command "claude --model claude-opus-4-8"
 
 オプション:
-  --auto            Claude に --dangerously-skip-permissions、Codex に --dangerously-bypass-approvals-and-sandbox を渡して自動実行モードで起動する
-  --check-existing  起動時に既存ファイルも処理する
-  --claude-steps    Claude で実行するステップ名をカンマ区切りで指定（デフォルト: 020_planning_ai,080_review_ai,100_docs_ai,110_pr_ai）
-  --codex-steps     Codex で実行するステップ名をカンマ区切りで指定（デフォルト: 040_planning_check_ai,050_implementation_ai,070_testing_ai）
+  --auto             Claude に --dangerously-skip-permissions、Codex に --dangerously-bypass-approvals-and-sandbox を渡して自動実行モードで起動する
+  --check-existing   起動時に既存ファイルも処理する
+  --claude-steps     Claude で実行するステップ名をカンマ区切りで指定（デフォルト: 020_planning_ai,080_review_ai,100_docs_ai,110_pr_ai）
+  --codex-steps      Codex で実行するステップ名をカンマ区切りで指定（デフォルト: 040_planning_check_ai,050_implementation_ai,070_testing_ai）
+  --poll-interval    ポーリング間隔（秒、デフォルト: 5.0）
+  --retry-timeout    エージェントが CR を移動しないまま同フォルダに留まった場合にリトライするまでの秒数（デフォルト: 3600）
 
 処理の順序:
   同一リポジトリで複数の変更依頼が発生した場合、1件ずつ順番に処理します。
@@ -35,6 +37,8 @@ import tempfile
 import time
 from datetime import datetime
 from pathlib import Path
+
+DEFAULT_RETRY_TIMEOUT = 3600  # エージェントが起動しても CR を移動しない場合のリトライ間隔（秒）
 
 
 STATUS_MAP = {
@@ -101,7 +105,7 @@ def resolve_agent(folder_name, step_agent_map):
 
 def find_in_flight_cr(cr_dir, exclude_key=None):
     """020〜110 のステップで処理中の変更依頼を返す（key, folder）。なければ None"""
-    for md_file in sorted(Path(cr_dir).rglob("change-request.md")):
+    for md_file in sorted(Path(cr_dir).rglob("ChangeRequest.md")):
         if md_file.parent.name in IN_FLIGHT_STEPS:
             key    = md_file.stem
             folder = md_file.parent.name
@@ -221,8 +225,10 @@ def main():
                         help="Claude に --dangerously-skip-permissions、Codex に --dangerously-bypass-approvals-and-sandbox を渡して自動実行モードで起動する（デフォルト: 有効）")
     parser.add_argument("--check-existing",         action="store_true", default=True,
                         help="起動時に既存ファイルも処理する（デフォルト: 有効）")
-    parser.add_argument("--poll-interval",          type=float, default=30.0,
-                        help="監視ポーリング間隔（秒, default: 30.0）")
+    parser.add_argument("--poll-interval",          type=float, default=5.0,
+                        help="監視ポーリング間隔（秒, default: 5.0）")
+    parser.add_argument("--retry-timeout",           type=float, default=DEFAULT_RETRY_TIMEOUT,
+                        help=f"エージェントが CR を移動しない場合に再起動するまでの秒数（default: {DEFAULT_RETRY_TIMEOUT}）")
     args = parser.parse_args()
 
     enable_ansi()
@@ -240,12 +246,14 @@ def main():
         print(f"ディレクトリが見つかりません: {cr_dir}", file=sys.stderr)
         sys.exit(1)
 
-    # stem -> 現在のフォルダ名 で管理することで、同じフォルダへの再移動も検出できる
-    processed = {}  # type: dict[str, str]
+    # stem -> (現在のフォルダ名, 起動時刻) で管理する
+    # 同じフォルダへの再移動も検出でき、エージェントが CR を移動しなかった場合は
+    # retry_timeout 秒後に自動リトライする
+    processed = {}  # type: dict[str, tuple[str, float]]
 
     if args.check_existing:
         print(f"{C.GRAY}既存のファイルを確認中...{C.RESET}")
-    for md_file in sorted(cr_dir.rglob("change-request.md")):
+    for md_file in sorted(cr_dir.rglob("ChangeRequest.md")):
         if md_file.parent.name in STATUS_MAP:
             key    = md_file.stem
             folder = md_file.parent.name
@@ -261,9 +269,9 @@ def main():
                 args.codex_command, step_agent_map,
             )
             if done:
-                processed[key] = folder
+                processed[key] = (folder, time.time())
         else:
-            processed[key] = folder
+            processed[key] = (folder, time.time())
 
     claude_steps_display = args.claude_steps.replace(",", ", ")
     codex_steps_display  = args.codex_steps.replace(",", ", ")
@@ -276,7 +284,7 @@ def main():
 
     try:
         while True:
-            for md_file in cr_dir.rglob("change-request.md"):
+            for md_file in cr_dir.rglob("ChangeRequest.md"):
                 if md_file.parent.name in STATUS_MAP:
                     key    = md_file.stem
                     folder = md_file.parent.name
@@ -285,14 +293,21 @@ def main():
                     folder = md_file.parent.parent.name
                 else:
                     continue
-                if processed.get(key) != folder:
+                cached = processed.get(key)
+                # 未処理 / フォルダが変わった / タイムアウトでリトライ の3条件でトリガー
+                is_new_folder  = cached is None or cached[0] != folder
+                is_timed_out   = (not is_new_folder) and (time.time() - cached[1] > args.retry_timeout)
+                if is_new_folder or is_timed_out:
+                    if is_timed_out:
+                        elapsed = int(time.time() - cached[1])
+                        print(f"\n{C.YELLOW}[リトライ] {key} が {elapsed // 60} 分間 {folder} に留まっているため再起動します{C.RESET}")
                     done = process_file(
                         md_file, project_root, cr_dir,
                         args.step_instructions_dir, args.claude_command,
                         args.codex_command, step_agent_map,
                     )
                     if done:
-                        processed[key] = folder
+                        processed[key] = (folder, time.time())
             time.sleep(args.poll_interval)
     except KeyboardInterrupt:
         print(f"\n{C.YELLOW}監視を終了しました。{C.RESET}")

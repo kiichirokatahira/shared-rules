@@ -7,23 +7,23 @@
 
 1. `x20_変更依頼/change-requests/010_backlog_person/` に変更依頼フォルダを作成する
    - フォルダ名: `YYYYMMDD-xxxx`（例: `20260604-add-user-auth`）
-   - フォルダ内に `change-request.md` を作成する（テンプレート: `x20_変更依頼/change-request.md` を参照）
+   - フォルダ内に `ChangeRequest.md` を作成する（テンプレート: `x20_変更依頼/ChangeRequest.md` を参照）
 
    ```
    010_backlog_person/
      20260604-add-user-auth/     ← 変更依頼フォルダ
-       change-request.md           ← 依頼書（テンプレートをコピーして記入）
+       ChangeRequest.md           ← 依頼書（テンプレートをコピーして記入）
    ```
 
 2. Claude を **Planning Mode**（`/plan` コマンド）で起動し、以下を依頼する:
 
    ```
-   @x20_変更依頼/change-requests/010_backlog_person/20260604-add-user-auth/change-request.md
+   @x20_変更依頼/change-requests/010_backlog_person/20260604-add-user-auth/ChangeRequest.md
    この変更依頼のドラフトを確認して、依頼の目的・変更内容・完了条件が明確かどうか
    指摘してください。不明瞭な箇所があれば質問してください。
    ```
 
-3. Claude の指摘・質問に回答し、`change-request.md` を修正する
+3. Claude の指摘・質問に回答し、`ChangeRequest.md` を修正する
 4. Claude が「内容が明確」と判断したら、フォルダごと `020_planning_ai/` に移動する
 
    ```

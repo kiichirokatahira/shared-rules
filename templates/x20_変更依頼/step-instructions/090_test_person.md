@@ -5,13 +5,13 @@ AI によるテストとレビューが完了した変更内容を、実際に�
 
 ## 入力
 
-- `x20_変更依頼/change-requests/090_test_person/{CR フォルダ}/change-request.md`
+- `x20_変更依頼/change-requests/090_test_person/{CR フォルダ}/ChangeRequest.md`
   - 末尾の `## 機能仕様書` セクションの「エンドツーエンド検証手順」を使用します
 - `x20_変更依頼/change-requests/090_test_person/{CR フォルダ}/test-results.md`（参考）
 
 ## 対応手順
 
-1. `change-request.md` 末尾の `## 機能仕様書` セクションにある「エンドツーエンド検証手順」に従って動作確認を行う
+1. `ChangeRequest.md` 末尾の `## 機能仕様書` セクションにある「エンドツーエンド検証手順」に従って動作確認を行う
 2. 変更依頼ファイルの「完了条件」チェックリストを確認する
 3. 判定を決める
 
@@ -26,12 +26,12 @@ CR フォルダごと `100_docs_ai/` に移動する。
 
 ### 実装バグ（仕様通りに動かない）→ `050_implementation_ai/` へ戻す
 
-`change-request.md` の末尾に `## 人間テスト指摘 (090→050)` セクションを追記し、
+`ChangeRequest.md` の末尾に `## 人間テスト指摘 (090→050)` セクションを追記し、
 再現手順・期待動作・実際の動作を記載してから CR フォルダごと `050_implementation_ai/` に移動する。
 
 ### 仕様の不備・誤り → `020_planning_ai/` へ戻す
 
-`change-request.md` の末尾に `## 人間テスト指摘 (090→020)` セクションを追記し、
+`ChangeRequest.md` の末尾に `## 人間テスト指摘 (090→020)` セクションを追記し、
 問題点と追加要件を記載してから CR フォルダごと `020_planning_ai/` に移動する。
 
 ## 備考

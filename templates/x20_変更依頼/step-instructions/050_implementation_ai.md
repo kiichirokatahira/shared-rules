@@ -11,7 +11,7 @@
 > **パス解決の注意（重要）**  
 > プロンプトで受け取った変更依頼ファイルの絶対パスを基点に、すべてのパスを導出してください。  
 >
-> 例: 入力が `/path/to/project/x20_変更依頼/change-requests/050_implementation_ai/20260604-xxx/change-request.md` の場合  
+> 例: 入力が `/path/to/project/x20_変更依頼/change-requests/050_implementation_ai/20260604-xxx/ChangeRequest.md` の場合  
 > - CR フォルダ: `/path/to/project/x20_変更依頼/change-requests/050_implementation_ai/20260604-xxx/`  
 > - 移動先フォルダ: `/path/to/project/x20_変更依頼/change-requests/060_infra_person/20260604-xxx/`
 
@@ -56,7 +56,7 @@ feat(scope): 変更内容の概要
 
 なぜこの変更が必要か（任意。仕様書の概要から引用可）
 
-Refs: x20_変更依頼/change-requests/050_implementation_ai/YYYYMMDD-xxxx/change-request.md
+Refs: x20_変更依頼/change-requests/050_implementation_ai/YYYYMMDD-xxxx/ChangeRequest.md
 ```
 
 ## 制約

@@ -11,7 +11,7 @@
 > **パス解決の注意（重要）**  
 > プロンプトで受け取った変更依頼ファイルの絶対パスを基点に、すべてのパスを導出してください。  
 >
-> 例: 入力が `/path/to/project/x20_変更依頼/change-requests/070_testing_ai/20260604-xxx/change-request.md` の場合  
+> 例: 入力が `/path/to/project/x20_変更依頼/change-requests/070_testing_ai/20260604-xxx/ChangeRequest.md` の場合  
 > - CR フォルダ: `/path/to/project/x20_変更依頼/change-requests/070_testing_ai/20260604-xxx/`  
 > - テスト結果の保存先: `/path/to/project/x20_変更依頼/change-requests/070_testing_ai/20260604-xxx/test-results.md`  
 > - ログの保存先: `/path/to/project/x20_変更依頼/change-requests/070_testing_ai/20260604-xxx/logs/070_testing_ai.md`  
@@ -55,7 +55,7 @@
 # テスト結果: [ブランチ名]
 
 **実行日時**: YYYY-MM-DD HH:MM
-**対象変更依頼**: x20_変更依頼/change-requests/070_testing_ai/YYYYMMDD-xxxx/change-request.md
+**対象変更依頼**: x20_変更依頼/change-requests/070_testing_ai/YYYYMMDD-xxxx/ChangeRequest.md
 **ブランチ**: ai-YYYYMMDD-xxxx
 
 ## 受け入れ基準テスト

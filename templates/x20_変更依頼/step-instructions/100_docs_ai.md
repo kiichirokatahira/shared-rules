@@ -11,7 +11,7 @@
 > **パス解決の注意（重要）**  
 > プロンプトで受け取った変更依頼ファイルの絶対パスを基点に、すべてのパスを導出してください。  
 >
-> 例: 入力が `/path/to/project/x20_変更依頼/change-requests/100_docs_ai/20260604-xxx/change-request.md` の場合  
+> 例: 入力が `/path/to/project/x20_変更依頼/change-requests/100_docs_ai/20260604-xxx/ChangeRequest.md` の場合  
 > - CR フォルダ: `/path/to/project/x20_変更依頼/change-requests/100_docs_ai/20260604-xxx/`  
 > - 移動先フォルダ: `/path/to/project/x20_変更依頼/change-requests/110_pr_ai/20260604-xxx/`
 
@@ -41,7 +41,7 @@
 ```
 docs: ドキュメントを実装内容に同期
 
-Refs: x20_変更依頼/change-requests/100_docs_ai/YYYYMMDD-xxxx/change-request.md
+Refs: x20_変更依頼/change-requests/100_docs_ai/YYYYMMDD-xxxx/ChangeRequest.md
 ```
 
 ## 制約
@@ -96,7 +96,7 @@ Refs: x20_変更依頼/change-requests/100_docs_ai/YYYYMMDD-xxxx/change-request.
 
 以下を順番に読み込む:
 
-1. `change-request.md` の `## 機能仕様書` セクション（変更のスコープ・意図）
+1. `ChangeRequest.md` の `## 機能仕様書` セクション（変更のスコープ・意図）
 2. スコープ内のソースファイル（変更内容の把握）
 3. 既存の仕様書（更新の場合 — 変更箇所のみ特定する）
 

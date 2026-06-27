@@ -11,7 +11,7 @@
 > **パス解決の注意（重要）**  
 > プロンプトで受け取った変更依頼ファイルの絶対パスを基点に、すべてのパスを導出してください。  
 >
-> 例: 入力が `/path/to/project/x20_変更依頼/change-requests/040_planning_check_ai/20260604-xxx/change-request.md` の場合  
+> 例: 入力が `/path/to/project/x20_変更依頼/change-requests/040_planning_check_ai/20260604-xxx/ChangeRequest.md` の場合  
 > - CR フォルダ: `/path/to/project/x20_変更依頼/change-requests/040_planning_check_ai/20260604-xxx/`  
 > - 移動先フォルダ（問題なし）: `/path/to/project/x20_変更依頼/change-requests/050_implementation_ai/20260604-xxx/`  
 > - 移動先フォルダ（問題あり）: `/path/to/project/x20_変更依頼/change-requests/020_planning_ai/20260604-xxx/`

@@ -9,7 +9,7 @@ list-change-requests.py
   change-requests/
     {step_folder}/
       {cr_name}/                    ← 変更依頼ごとのサブフォルダ
-        change-request.md           ← 依頼書（必須）
+        ChangeRequest.md           ← 依頼書（必須）
 """
 
 import argparse
@@ -55,7 +55,7 @@ def main():
         for cr_subfolder in sorted(step_folder.iterdir()):
             if not cr_subfolder.is_dir():
                 continue
-            cr_md = cr_subfolder / "change-request.md"
+            cr_md = cr_subfolder / "ChangeRequest.md"
             if not cr_md.exists():
                 continue
 
@@ -94,7 +94,7 @@ def main():
         "|---|---|---|---|:---:|",
     ]
     for row in rows:
-        link = f"{args.change_requests_dir}/{row['folder']}/{row['cr_name']}/change-request.md"
+        link = f"{args.change_requests_dir}/{row['folder']}/{row['cr_name']}/ChangeRequest.md"
         lines.append(
             f"| [{row['title']}]({link}) | {row['date']} | {row['status']} | {row['assignee']} | {row['step']} |"
         )

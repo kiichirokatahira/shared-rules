@@ -46,7 +46,7 @@
 | [templates/x20_変更依頼/step-instructions/090_test_person.md](templates/x20_変更依頼/step-instructions/090_test_person.md) | Step 090 動作確認手順 | `<project>/x20_変更依頼/step-instructions/090_test_person.md` |
 | [templates/x20_変更依頼/step-instructions/100_docs_ai.md](templates/x20_変更依頼/step-instructions/100_docs_ai.md) | Step 100 ドキュメント更新の指示 | `<project>/x20_変更依頼/step-instructions/100_docs_ai.md` |
 | [templates/x20_変更依頼/step-instructions/110_pr_ai.md](templates/x20_変更依頼/step-instructions/110_pr_ai.md) | Step 110 PR 作成の指示 | `<project>/x20_変更依頼/step-instructions/110_pr_ai.md` |
-| [templates/x20_変更依頼/change-request.md](templates/x20_変更依頼/change-request.md) | 変更依頼テンプレート | `<project>/x20_変更依頼/change-request.md` |
+| [templates/x20_変更依頼/ChangeRequest.md](templates/x20_変更依頼/ChangeRequest.md) | 変更依頼テンプレート | `<project>/x20_変更依頼/ChangeRequest.md` |
 | [templates/x20_変更依頼/change-requests/](templates/x20_変更依頼/change-requests/) | 変更依頼ステップフォルダ Step 010〜120（`_person`/`_ai` で担当を表示） | `<project>/x20_変更依頼/change-requests/` にコピー |
 | [templates/scripts/list-change-requests.py](templates/scripts/list-change-requests.py) | 変更依頼のステータス一覧を表形式で出力するスクリプト | `<project>/scripts/list-change-requests.py` |
 | [templates/scripts/watch-change-requests.py](templates/scripts/watch-change-requests.py) | change-requests フォルダを監視し `_ai` フォルダへの変更依頼フォルダ移動で自動起動するスクリプト | `<project>/scripts/watch-change-requests.py` |
@@ -60,7 +60,7 @@
 
 ```
 @x20_変更依頼/step-instructions/020_planning_ai.md
-変更依頼 x20_変更依頼/change-requests/020_planning_ai/20260603-xxxx/change-request.md を読んで仕様書を作成してください。
+変更依頼 x20_変更依頼/change-requests/020_planning_ai/20260603-xxxx/ChangeRequest.md を読んで仕様書を作成してください。
 ```
 
 フォルダと指示ファイルが 1:1 対応しているため、変更依頼の現在地から参照する指示ファイルが一目で分かります。
