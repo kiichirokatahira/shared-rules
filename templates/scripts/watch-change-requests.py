@@ -16,8 +16,8 @@ x20_変更依頼/change-requests/ を監視し、_ai フォルダにファイル
                      プロジェクトリポジトリとは別に CR リポジトリを分離している場合に指定する
   --auto             Claude に --dangerously-skip-permissions、Codex に --dangerously-bypass-approvals-and-sandbox を渡して自動実行モードで起動する
   --check-existing   起動時に既存ファイルも処理する
-  --claude-steps     Claude で実行するステップ名をカンマ区切りで指定（デフォルト: 020_planning_ai,080_review_ai,100_docs_ai,110_pr_ai）
-  --codex-steps      Codex で実行するステップ名をカンマ区切りで指定（デフォルト: 040_planning_check_ai,050_implementation_ai,070_testing_ai）
+  --claude-steps     Claude で実行するステップ名をカンマ区切りで指定（デフォルト: 020_planning_ai,055_code_review_ai,080_review_ai,100_docs_ai,110_pr_ai）
+  --codex-steps      Codex で実行するステップ名をカンマ区切りで指定（デフォルト: 050_implementation_ai,070_testing_ai）
   --poll-interval    ポーリング間隔（秒、デフォルト: 5.0）
   --retry-timeout    エージェントが CR を移動しないまま同フォルダに留まった場合にリトライするまでの秒数（デフォルト: 3600）
 
@@ -48,8 +48,8 @@ DEFAULT_RETRY_TIMEOUT = 3600  # エージェントが起動しても CR を移�
 STATUS_MAP = {
     "010_backlog_person":    {"label": "草案・未着手",         "role": "person"},
     "020_planning_ai":       {"label": "依頼明確化・仕様策定", "role": "ai", "default_agent": "claude", "prompt": "変更依頼 {} を読んで仕様書を作成してください。"},
-    "040_planning_check_ai": {"label": "仕様書精査",           "role": "ai", "default_agent": "codex",  "prompt": "変更依頼 {} の仕様書を技術精査してください。"},
     "050_implementation_ai": {"label": "実装",                 "role": "ai", "default_agent": "codex",  "prompt": "変更依頼 {} を実装してください。"},
+    "055_code_review_ai":    {"label": "コードレビュー",       "role": "ai", "default_agent": "claude", "prompt": "変更依頼 {} の実装コードをレビューしてください。"},
     "060_infra_person":      {"label": "インフラ事前作業",     "role": "person"},
     "070_testing_ai":        {"label": "テスト実行",           "role": "ai", "default_agent": "codex",  "prompt": "変更依頼 {} のテストを実行してください。"},
     "080_review_ai":         {"label": "テスト結果レビュー",   "role": "ai", "default_agent": "claude", "prompt": "変更依頼 {} のテスト結果をレビューしてください。"},
@@ -62,8 +62,8 @@ STATUS_MAP = {
 # 「処理中」とみなすステップ（010_backlog_person と 120_done_person 以外）
 IN_FLIGHT_STEPS = {k for k in STATUS_MAP if k not in ("010_backlog_person", "120_done_person")}
 
-DEFAULT_CLAUDE_STEPS = "020_planning_ai,080_review_ai,100_docs_ai,110_pr_ai"
-DEFAULT_CODEX_STEPS  = "040_planning_check_ai,050_implementation_ai,070_testing_ai"
+DEFAULT_CLAUDE_STEPS = "020_planning_ai,055_code_review_ai,080_review_ai,100_docs_ai,110_pr_ai"
+DEFAULT_CODEX_STEPS  = "050_implementation_ai,070_testing_ai"
 
 
 class C:

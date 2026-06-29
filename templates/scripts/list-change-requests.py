@@ -20,8 +20,8 @@ from pathlib import Path
 STATUS_MAP = {
     "010_backlog_person":    {"label": "草案・未着手",           "assignee": "人間"},
     "020_planning_ai":       {"label": "依頼明確化・仕様策定中", "assignee": "AI"},
-    "040_planning_check_ai": {"label": "仕様書精査中",           "assignee": "AI"},
     "050_implementation_ai": {"label": "実装中",                 "assignee": "AI"},
+    "055_code_review_ai":    {"label": "コードレビュー中",       "assignee": "AI"},
     "070_testing_ai":        {"label": "テスト実行中",           "assignee": "AI"},
     "080_review_ai":         {"label": "テスト結果レビュー中",   "assignee": "AI"},
     "090_test_person":       {"label": "動作確認中",             "assignee": "人間"},

@@ -70,9 +70,9 @@ change-requests/
 | ステップ | 担当 | 変更依頼フォルダの移動先 | 参照ファイル |
 |---|---|---|---|
 | 010: 変更依頼作成 | 人間（Planning Mode） | `010_backlog_person/` → `020` | — |
-| 020: 依頼明確化・仕様策定 | AI | → `040_planning_check_ai/`（質問あり→`010`） | `ChangeRequest.md`（仕様書追記） |
-| 040: 仕様書精査 | AI | → `050_implementation_ai/`（質問あり→`020`） | `ChangeRequest.md` |
-| 050: 実装 | AI | → `060_infra_person/` | `ChangeRequest.md` |
+| 020: 依頼明確化・仕様策定 | AI | → `050_implementation_ai/`（質問あり→`010`） | `ChangeRequest.md`（仕様書追記） |
+| 050: 実装 | AI | → `055_code_review_ai/`（055 からの戻りも同フォルダ） | `ChangeRequest.md` |
+| 055: コードレビュー | AI | → `060_infra_person/`（問題あり→`050`） | `ChangeRequest.md` |
 | 060: インフラ事前作業 | 人間 | → `070_testing_ai/` | `ChangeRequest.md` |
 | 070: テスト実行 | AI | → `080_review_ai/` | `ChangeRequest.md` → `test-results.md` 作成 |
 | 080: テスト結果レビュー | AI | → `090_test_person/`（問題あり→`070`） | `test-results.md` |
@@ -110,8 +110,8 @@ python scripts/watch-change-requests.py --cr-repo ../myproject-cr --check-existi
 
 # どの AI が各ステップを担当するかをカスタマイズする場合
 python scripts/watch-change-requests.py --cr-repo ../myproject-cr \
-  --claude-steps "020_planning_ai,080_review_ai,100_docs_ai,110_pr_ai" \
-  --codex-steps  "040_planning_check_ai,050_implementation_ai,070_testing_ai"
+  --claude-steps "020_planning_ai,055_code_review_ai,080_review_ai,100_docs_ai,110_pr_ai" \
+  --codex-steps  "050_implementation_ai,070_testing_ai"
 ```
 
 | フォルダ種別 | 動作 |
@@ -124,8 +124,8 @@ python scripts/watch-change-requests.py --cr-repo ../myproject-cr \
 | ステップ | デフォルト担当 |
 |---|---|
 | 020_planning_ai | Claude |
-| 040_planning_check_ai | Codex |
 | 050_implementation_ai | Codex |
+| 055_code_review_ai | Claude |
 | 070_testing_ai | Codex |
 | 080_review_ai | Claude |
 | 100_docs_ai | Claude |
@@ -177,8 +177,8 @@ git branch -d ai-YYYYMMDD-xxxx
 |---|---|
 | `x20_変更依頼/change-requests/010_backlog_person/` | Step 010: 草案・未着手（Planning Mode で精査） |
 | `x20_変更依頼/change-requests/020_planning_ai/` | Step 020: AI が仕様策定中 |
-| `x20_変更依頼/change-requests/040_planning_check_ai/` | Step 040: AI が仕様精査中 |
 | `x20_変更依頼/change-requests/050_implementation_ai/` | Step 050: AI が実装中 |
+| `x20_変更依頼/change-requests/055_code_review_ai/` | Step 055: AI がコードレビュー中 |
 | `x20_変更依頼/change-requests/060_infra_person/` | Step 060: 人間がインフラ事前作業中 |
 | `x20_変更依頼/change-requests/070_testing_ai/` | Step 070: AI がテスト中 |
 | `x20_変更依頼/change-requests/080_review_ai/` | Step 080: AI がテスト結果レビュー中 |
@@ -204,7 +204,7 @@ git branch -d ai-YYYYMMDD-xxxx
 | `ChangeRequest.md` | 依頼書・仕様書（必須） |
 | `test-results.md` | テスト結果サマリー（Step 070 で作成） |
 | `logs/020_planning_ai.md` | Step 020 AI セッションログ（推奨） |
-| `logs/040_planning_check_ai.md` | Step 040 AI セッションログ（推奨） |
+| `logs/055_code_review_ai.md` | Step 055 AI セッションログ（推奨） |
 | `logs/070_testing_ai.md` | Step 070 AI セッションログ（推奨） |
 | `logs/080_review_ai.md` | Step 080 AI セッションログ（推奨） |
 
