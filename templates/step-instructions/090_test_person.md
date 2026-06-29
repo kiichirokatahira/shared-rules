@@ -1,13 +1,13 @@
-# Step 090 — 人間: 動作確認テスト
+﻿# Step 090 — 人間: 動作確認テスト
 
 このステップは**人間が対応**します。
 AI によるテストとレビューが完了した変更内容を、実際に動作確認します。
 
 ## 入力
 
-- `x20_変更依頼/change-requests/090_test_person/{CR フォルダ}/ChangeRequest.md`
+- `change-requests/090_test_person/{CR フォルダ}/ChangeRequest.md`
   - 末尾の `## 機能仕様書` セクションの「エンドツーエンド検証手順」を使用します
-- `x20_変更依頼/change-requests/090_test_person/{CR フォルダ}/test-results.md`（参考）
+- `change-requests/090_test_person/{CR フォルダ}/test-results.md`（参考）
 
 ## 対応手順
 

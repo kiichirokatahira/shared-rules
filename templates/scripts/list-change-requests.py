@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 list-change-requests.py
 使い方: python scripts/list-change-requests.py
@@ -35,8 +35,8 @@ def main():
     parser = argparse.ArgumentParser(description="変更依頼ステータス一覧を出力")
     parser.add_argument("--cr-repo", default=None,
                         help="変更依頼リポジトリのパス（省略時はカレントディレクトリ）")
-    parser.add_argument("--change-requests-dir", default="x20_変更依頼/change-requests",
-                        help="変更依頼ディレクトリ (default: x20_変更依頼/change-requests)")
+    parser.add_argument("--change-requests-dir", default="change-requests",
+                        help="変更依頼ディレクトリ (default: change-requests)")
     parser.add_argument("--output-file", default=None,
                         help="出力ファイルパス（省略時は <change-requests-dir>/STATUS.md、\"\" で標準出力）")
     args = parser.parse_args()

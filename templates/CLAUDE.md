@@ -42,9 +42,8 @@ Step 060 で Pipeline のインポート・接続設定・実行確認を行い�
   ...
 
 [project-cr-repo]/      ← 変更依頼リポジトリ（常に main で管理）
-  x20_変更依頼/
-    change-requests/
-    step-instructions/
+  change-requests/
+  step-instructions/
 ```
 
 - **project-repo**: コード＋仕様書。`ai-YYYYMMDD-xxxx` ブランチで変更管理
@@ -81,7 +80,7 @@ change-requests/
 | 110: PR 作成 | AI | → `120_done_person/` | `ChangeRequest.md` |
 | 120: マージ | 人間 | — | — |
 
-ステップ別の詳細指示: `x20_変更依頼/step-instructions/` ディレクトリを参照してください。
+ステップ別の詳細指示: `step-instructions/` ディレクトリを参照してください。
 変更依頼のフォルダ名と指示ファイル名が 1:1 対応しています（例: `020_planning_ai/` → `step-instructions/020_planning_ai.md`）。
 
 ### 変更依頼ステータス一覧の確認
@@ -93,12 +92,12 @@ change-requests/
 python scripts/list-change-requests.py --cr-repo ../myproject-cr
 
 # ファイルに保存
-python scripts/list-change-requests.py --cr-repo ../myproject-cr --output-file ../myproject-cr/x20_変更依頼/STATUS.md
+python scripts/list-change-requests.py --cr-repo ../myproject-cr --output-file ../myproject-cr/STATUS.md
 ```
 
 ### 変更依頼フォルダの自動監視
 
-CR リポジトリの `x20_変更依頼/change-requests/` を監視し、`_ai` フォルダに変更依頼フォルダが届いた時点で
+CR リポジトリの `change-requests/` を監視し、`_ai` フォルダに変更依頼フォルダが届いた時点で
 エージェントを**プロジェクトリポジトリのルート**で起動します。**1件ずつ処理**するため、処理中の変更依頼（020〜110 のステップ）がある場合、次の変更依頼は自動待機し、完了後に自動起動します:
 
 ```bash
@@ -175,18 +174,18 @@ git branch -d ai-YYYYMMDD-xxxx
 
 | パス | 用途 |
 |---|---|
-| `x20_変更依頼/change-requests/010_backlog_person/` | Step 010: 草案・未着手（Planning Mode で精査） |
-| `x20_変更依頼/change-requests/020_planning_ai/` | Step 020: AI が仕様策定中 |
-| `x20_変更依頼/change-requests/050_implementation_ai/` | Step 050: AI が実装中 |
-| `x20_変更依頼/change-requests/055_code_review_ai/` | Step 055: AI がコードレビュー中 |
-| `x20_変更依頼/change-requests/060_infra_person/` | Step 060: 人間がインフラ事前作業中 |
-| `x20_変更依頼/change-requests/070_testing_ai/` | Step 070: AI がテスト中 |
-| `x20_変更依頼/change-requests/080_review_ai/` | Step 080: AI がテスト結果レビュー中 |
-| `x20_変更依頼/change-requests/090_test_person/` | Step 090: 人間が動作確認中 |
-| `x20_変更依頼/change-requests/100_docs_ai/` | Step 100: AI がドキュメント更新中 |
-| `x20_変更依頼/change-requests/110_pr_ai/` | Step 110: AI が PR 作成中 |
-| `x20_変更依頼/change-requests/120_done_person/` | Step 120: 人間が PR 確認・マージ待ち |
-| `x20_変更依頼/step-instructions/` | ステップ別 AI 指示（フォルダ名と 1:1 対応） |
+| `change-requests/010_backlog_person/` | Step 010: 草案・未着手（Planning Mode で精査） |
+| `change-requests/020_planning_ai/` | Step 020: AI が仕様策定中 |
+| `change-requests/050_implementation_ai/` | Step 050: AI が実装中 |
+| `change-requests/055_code_review_ai/` | Step 055: AI がコードレビュー中 |
+| `change-requests/060_infra_person/` | Step 060: 人間がインフラ事前作業中 |
+| `change-requests/070_testing_ai/` | Step 070: AI がテスト中 |
+| `change-requests/080_review_ai/` | Step 080: AI がテスト結果レビュー中 |
+| `change-requests/090_test_person/` | Step 090: 人間が動作確認中 |
+| `change-requests/100_docs_ai/` | Step 100: AI がドキュメント更新中 |
+| `change-requests/110_pr_ai/` | Step 110: AI が PR 作成中 |
+| `change-requests/120_done_person/` | Step 120: 人間が PR 確認・マージ待ち |
+| `step-instructions/` | ステップ別 AI 指示（フォルダ名と 1:1 対応） |
 
 ### project-repo（コードリポジトリ、このリポジトリ）
 

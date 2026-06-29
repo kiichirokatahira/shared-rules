@@ -1,4 +1,4 @@
----
+﻿---
 tags:
   - 仕様書/index
   - CORE_XX
@@ -27,4 +27,4 @@ updated: YYYY-MM-DD
 ## 関連
 
 - 全体 MOC: [[index|仕様書一覧]]
-- 変更依頼: `x20_変更依頼/change-requests/`
+- 変更依頼: `change-requests/`

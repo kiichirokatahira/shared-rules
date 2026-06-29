@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 watch-change-requests.py
-x20_変更依頼/change-requests/ を監視し、_ai フォルダにファイルが届いたら
+change-requests/ を監視し、_ai フォルダにファイルが届いたら
 エージェントを自動起動する（1件ずつ処理）
 
 使い方:
@@ -219,10 +219,10 @@ def main():
     parser = argparse.ArgumentParser(description="変更依頼フォルダを監視してエージェントを自動起動（1件ずつ処理）")
     parser.add_argument("--cr-repo",                default=None,
                         help="変更依頼リポジトリのパス（省略時はカレントディレクトリ）")
-    parser.add_argument("--change-requests-dir",   default="x20_変更依頼/change-requests")
-    parser.add_argument("--step-instructions-dir", default="x20_変更依頼/step-instructions")
-    parser.add_argument("--claude-command",         default="claude")
-    parser.add_argument("--codex-command",          default="codex exec")
+    parser.add_argument("--change-requests-dir",   default="change-requests")
+    parser.add_argument("--step-instructions-dir", default="step-instructions")
+    parser.add_argument("--claude-command",         default="claude --model claude-sonnet-4-6")
+    parser.add_argument("--codex-command",          default="codex exec -c 'model_reasoning_effort=\"medium\"'")
     parser.add_argument("--claude-steps",           default=DEFAULT_CLAUDE_STEPS,
                         help=f"Claude で実行するステップ名（カンマ区切り、デフォルト: {DEFAULT_CLAUDE_STEPS}）")
     parser.add_argument("--codex-steps",            default=DEFAULT_CODEX_STEPS,

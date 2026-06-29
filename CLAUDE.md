@@ -48,26 +48,26 @@
 
 | ファイル | 用途 | コピー先 |
 |---|---|---|
-| [templates/x20_変更依頼/step-instructions/010_backlog_person.md](templates/x20_変更依頼/step-instructions/010_backlog_person.md) | Step 010 変更依頼作成手順（Planning Mode） | `<project-cr>/x20_変更依頼/step-instructions/010_backlog_person.md` |
-| [templates/x20_変更依頼/step-instructions/020_planning_ai.md](templates/x20_変更依頼/step-instructions/020_planning_ai.md) | Step 020 依頼明確化・仕様策定の指示 | `<project-cr>/x20_変更依頼/step-instructions/020_planning_ai.md` |
-| [templates/x20_変更依頼/step-instructions/040_planning_check_ai.md](templates/x20_変更依頼/step-instructions/040_planning_check_ai.md) | Step 040 仕様書精査の指示 | `<project-cr>/x20_変更依頼/step-instructions/040_planning_check_ai.md` |
-| [templates/x20_変更依頼/step-instructions/050_implementation_ai.md](templates/x20_変更依頼/step-instructions/050_implementation_ai.md) | Step 050 実装の指示 | `<project-cr>/x20_変更依頼/step-instructions/050_implementation_ai.md` |
-| [templates/x20_変更依頼/step-instructions/060_infra_person.md](templates/x20_変更依頼/step-instructions/060_infra_person.md) | Step 060 インフラ事前作業の指示 | `<project-cr>/x20_変更依頼/step-instructions/060_infra_person.md` |
-| [templates/x20_変更依頼/step-instructions/070_testing_ai.md](templates/x20_変更依頼/step-instructions/070_testing_ai.md) | Step 070 テスト実行の指示 | `<project-cr>/x20_変更依頼/step-instructions/070_testing_ai.md` |
-| [templates/x20_変更依頼/step-instructions/080_review_ai.md](templates/x20_変更依頼/step-instructions/080_review_ai.md) | Step 080 テスト結果レビューの指示 | `<project-cr>/x20_変更依頼/step-instructions/080_review_ai.md` |
-| [templates/x20_変更依頼/step-instructions/090_test_person.md](templates/x20_変更依頼/step-instructions/090_test_person.md) | Step 090 動作確認手順 | `<project-cr>/x20_変更依頼/step-instructions/090_test_person.md` |
-| [templates/x20_変更依頼/step-instructions/100_docs_ai.md](templates/x20_変更依頼/step-instructions/100_docs_ai.md) | Step 100 ドキュメント更新の指示 | `<project-cr>/x20_変更依頼/step-instructions/100_docs_ai.md` |
-| [templates/x20_変更依頼/step-instructions/110_pr_ai.md](templates/x20_変更依頼/step-instructions/110_pr_ai.md) | Step 110 PR 作成の指示 | `<project-cr>/x20_変更依頼/step-instructions/110_pr_ai.md` |
-| [templates/x20_変更依頼/ChangeRequest.md](templates/x20_変更依頼/ChangeRequest.md) | 変更依頼テンプレート | `<project-cr>/x20_変更依頼/ChangeRequest.md` |
-| [templates/x20_変更依頼/change-requests/](templates/x20_変更依頼/change-requests/) | 変更依頼ステップフォルダ Step 010〜120（`_person`/`_ai` で担当を表示） | `<project-cr>/x20_変更依頼/change-requests/` にコピー |
+| [templates/step-instructions/010_backlog_person.md](templates/step-instructions/010_backlog_person.md) | Step 010 変更依頼作成手順（Planning Mode） | `<project-cr>/step-instructions/010_backlog_person.md` |
+| [templates/step-instructions/020_planning_ai.md](templates/step-instructions/020_planning_ai.md) | Step 020 依頼明確化・仕様策定の指示 | `<project-cr>/step-instructions/020_planning_ai.md` |
+| [templates/step-instructions/050_implementation_ai.md](templates/step-instructions/050_implementation_ai.md) | Step 050 実装の指示 | `<project-cr>/step-instructions/050_implementation_ai.md` |
+| [templates/step-instructions/055_code_review_ai.md](templates/step-instructions/055_code_review_ai.md) | Step 055 コードレビューの指示 | `<project-cr>/step-instructions/055_code_review_ai.md` |
+| [templates/step-instructions/060_infra_person.md](templates/step-instructions/060_infra_person.md) | Step 060 インフラ事前作業の指示 | `<project-cr>/step-instructions/060_infra_person.md` |
+| [templates/step-instructions/070_testing_ai.md](templates/step-instructions/070_testing_ai.md) | Step 070 テスト実行の指示 | `<project-cr>/step-instructions/070_testing_ai.md` |
+| [templates/step-instructions/080_review_ai.md](templates/step-instructions/080_review_ai.md) | Step 080 テスト結果レビューの指示 | `<project-cr>/step-instructions/080_review_ai.md` |
+| [templates/step-instructions/090_test_person.md](templates/step-instructions/090_test_person.md) | Step 090 動作確認手順 | `<project-cr>/step-instructions/090_test_person.md` |
+| [templates/step-instructions/100_docs_ai.md](templates/step-instructions/100_docs_ai.md) | Step 100 ドキュメント更新の指示 | `<project-cr>/step-instructions/100_docs_ai.md` |
+| [templates/step-instructions/110_pr_ai.md](templates/step-instructions/110_pr_ai.md) | Step 110 PR 作成の指示 | `<project-cr>/step-instructions/110_pr_ai.md` |
+| [templates/ChangeRequest.md](templates/ChangeRequest.md) | 変更依頼テンプレート | `<project-cr>/ChangeRequest.md` |
+| [templates/change-requests/](templates/change-requests/) | 変更依頼ステップフォルダ Step 010〜120（`_person`/`_ai` で担当を表示） | `<project-cr>/change-requests/` にコピー |
 
 ### ステップ別セッションの起動方法
 
 各 Claude セッション開始時に、変更依頼が置かれているフォルダと同名の指示ファイルを提示してください：
 
 ```
-@x20_変更依頼/step-instructions/020_planning_ai.md
-変更依頼 x20_変更依頼/change-requests/020_planning_ai/20260603-xxxx/ChangeRequest.md を読んで仕様書を作成してください。
+@step-instructions/020_planning_ai.md
+変更依頼 change-requests/020_planning_ai/20260603-xxxx/ChangeRequest.md を読んで仕様書を作成してください。
 ```
 
 フォルダと指示ファイルが 1:1 対応しているため、変更依頼の現在地から参照する指示ファイルが一目で分かります。

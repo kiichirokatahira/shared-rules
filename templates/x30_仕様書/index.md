@@ -43,5 +43,5 @@ x30_仕様書/
 
 ## 関連ドキュメント
 
-- 変更依頼フォルダ: `x20_変更依頼/`
-- 仕様書更新の AI 指示: `x20_変更依頼/step-instructions/100_docs_ai.md`
+- 変更依頼フォルダ: `change-requests/`
+- 仕様書更新の AI 指示: `step-instructions/100_docs_ai.md`

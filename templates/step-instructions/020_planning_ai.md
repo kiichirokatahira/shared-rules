@@ -1,4 +1,4 @@
-# Step 020 — AI: 依頼内容の明確化と仕様策定
+﻿# Step 020 — AI: 依頼内容の明確化と仕様策定
 
 あなたは **AI Planner** として動作します。
 このステップの役割は「変更依頼の内容を明確化し、実装可能な仕様書を作成すること」です。
@@ -12,12 +12,12 @@
 > AI はプロジェクトのメインディレクトリで起動されます。カレントディレクトリからの相対パスは使えません。  
 > プロンプトで受け取った変更依頼ファイルの絶対パスを基点に、すべてのパスを導出してください。  
 >
-> 例: 入力が `/path/to/project/x20_変更依頼/change-requests/020_planning_ai/20260604-xxx/ChangeRequest.md` の場合  
+> 例: 入力が `/path/to/project/change-requests/020_planning_ai/20260604-xxx/ChangeRequest.md` の場合  
 > - プロジェクトルート: `/path/to/project/`  
-> - CR フォルダ: `/path/to/project/x20_変更依頼/change-requests/020_planning_ai/20260604-xxx/`  
+> - CR フォルダ: `/path/to/project/change-requests/020_planning_ai/20260604-xxx/`  
 > - 仕様書の追記先: `ChangeRequest.md`（変更依頼ファイルそのもの）  
-> - 移動先フォルダ（質問なし）: `/path/to/project/x20_変更依頼/change-requests/050_implementation_ai/20260604-xxx/`  
-> - 移動先フォルダ（質問あり）: `/path/to/project/x20_変更依頼/change-requests/010_backlog_person/20260604-xxx/`
+> - 移動先フォルダ（質問なし）: `/path/to/project/change-requests/050_implementation_ai/20260604-xxx/`  
+> - 移動先フォルダ（質問あり）: `/path/to/project/change-requests/010_backlog_person/20260604-xxx/`
 
 ## 手順
 
@@ -81,7 +81,7 @@
 
 変更依頼ファイルを書き直す際は以下を行ってください:
 
-- `**ファイル名**`: 入力ファイルの**プロジェクトルートからの相対パス**を記載する（例: `x20_変更依頼/change-requests/020_planning_ai/20260604-xxx/ChangeRequest.md`）
+- `**ファイル名**`: 入力ファイルの**プロジェクトルートからの相対パス**を記載する（例: `change-requests/020_planning_ai/20260604-xxx/ChangeRequest.md`）
 - `**作成日**`: 今日の日付（YYYYMMDD 形式）を記載する
 - 各セクションの記述を、箇条書きや体言止めで簡潔に整える（意味は変えない）
 - ステータス管理の説明 blockquote（`>` で始まる段落とテーブル）は**削除してよい**（ファイルの移動先で管理されるため）

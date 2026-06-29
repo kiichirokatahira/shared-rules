@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 # shared-rules の scripts/ と step-instructions/ を各リポジトリへ同期するスクリプト
 # 使い方: python scripts/sync-templates.py
 
@@ -15,7 +15,7 @@ target_repos = [
 ]
 
 source_scripts_dir = shared_rules_root / "templates/scripts"
-source_step_instructions_dir = shared_rules_root / "templates/x20_変更依頼/step-instructions"
+source_step_instructions_dir = shared_rules_root / "templates/step-instructions"
 
 for repo in target_repos:
     if not repo.exists():
@@ -31,12 +31,12 @@ for repo in target_repos:
             print(f"  コピー: {file.name} -> {repo}/scripts/")
 
     # step-instructions/ の同期
-    dest_step_instructions_dir = repo / "x20_変更依頼/step-instructions"
+    dest_step_instructions_dir = repo / "step-instructions"
     dest_step_instructions_dir.mkdir(parents=True, exist_ok=True)
     for file in source_step_instructions_dir.iterdir():
         if file.is_file():
             shutil.copy2(file, dest_step_instructions_dir / file.name)
-            print(f"  コピー: {file.name} -> {repo}/x20_変更依頼/step-instructions/")
+            print(f"  コピー: {file.name} -> {repo}/step-instructions/")
 
     print(f"[完了] {repo}")
 

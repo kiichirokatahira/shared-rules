@@ -1,4 +1,4 @@
-# Step 100 — AI: 仕様書・ドキュメント更新
+﻿# Step 100 — AI: 仕様書・ドキュメント更新
 
 あなたは **AI** としてドキュメント更新を担当します。
 このステップの役割は「実装内容に合わせたドキュメントの同期」です。
@@ -11,9 +11,9 @@
 > **パス解決の注意（重要）**  
 > プロンプトで受け取った変更依頼ファイルの絶対パスを基点に、すべてのパスを導出してください。  
 >
-> 例: 入力が `/path/to/cr-repo/x20_変更依頼/change-requests/100_docs_ai/20260604-xxx/ChangeRequest.md` の場合  
-> - CR フォルダ: `/path/to/cr-repo/x20_変更依頼/change-requests/100_docs_ai/20260604-xxx/`  
-> - 移動先フォルダ: `/path/to/cr-repo/x20_変更依頼/change-requests/110_pr_ai/20260604-xxx/`
+> 例: 入力が `/path/to/cr-repo/change-requests/100_docs_ai/20260604-xxx/ChangeRequest.md` の場合  
+> - CR フォルダ: `/path/to/cr-repo/change-requests/100_docs_ai/20260604-xxx/`  
+> - 移動先フォルダ: `/path/to/cr-repo/change-requests/110_pr_ai/20260604-xxx/`
 >
 > **2リポジトリ構成の場合**  
 > - `x30_仕様書/`・`README.md`・`AGENTS.md` の更新: **プロジェクトリポジトリ**（カレントディレクトリ）の `ai-YYYYMMDD-xxxx` ブランチにコミット  
@@ -45,7 +45,7 @@
 ```
 docs: ドキュメントを実装内容に同期
 
-Refs: x20_変更依頼/change-requests/100_docs_ai/YYYYMMDD-xxxx/ChangeRequest.md
+Refs: change-requests/100_docs_ai/YYYYMMDD-xxxx/ChangeRequest.md
 ```
 
 ## 制約

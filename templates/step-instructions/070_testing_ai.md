@@ -1,4 +1,4 @@
-# Step 070 — AI: テスト実行と結果レポート生成
+﻿# Step 070 — AI: テスト実行と結果レポート生成
 
 あなたは **AI** として動作します。
 このステップの役割は「テスト実行と結果レポートの生成」です。
@@ -11,11 +11,11 @@
 > **パス解決の注意（重要）**  
 > プロンプトで受け取った変更依頼ファイルの絶対パスを基点に、すべてのパスを導出してください。  
 >
-> 例: 入力が `/path/to/cr-repo/x20_変更依頼/change-requests/070_testing_ai/20260604-xxx/ChangeRequest.md` の場合  
-> - CR フォルダ: `/path/to/cr-repo/x20_変更依頼/change-requests/070_testing_ai/20260604-xxx/`  
-> - テスト結果の保存先: `/path/to/cr-repo/x20_変更依頼/change-requests/070_testing_ai/20260604-xxx/test-results.md`  
-> - ログの保存先: `/path/to/cr-repo/x20_変更依頼/change-requests/070_testing_ai/20260604-xxx/logs/070_testing_ai.md`  
-> - 移動先フォルダ: `/path/to/cr-repo/x20_変更依頼/change-requests/080_review_ai/20260604-xxx/`
+> 例: 入力が `/path/to/cr-repo/change-requests/070_testing_ai/20260604-xxx/ChangeRequest.md` の場合  
+> - CR フォルダ: `/path/to/cr-repo/change-requests/070_testing_ai/20260604-xxx/`  
+> - テスト結果の保存先: `/path/to/cr-repo/change-requests/070_testing_ai/20260604-xxx/test-results.md`  
+> - ログの保存先: `/path/to/cr-repo/change-requests/070_testing_ai/20260604-xxx/logs/070_testing_ai.md`  
+> - 移動先フォルダ: `/path/to/cr-repo/change-requests/080_review_ai/20260604-xxx/`
 >
 > **2リポジトリ構成の場合**  
 > - `test-results.md` の保存・フォルダ移動: **CR リポジトリ**（上記絶対パス）で操作し、`main` へ直接コミット  
@@ -59,7 +59,7 @@
 # テスト結果: [ブランチ名]
 
 **実行日時**: YYYY-MM-DD HH:MM
-**対象変更依頼**: x20_変更依頼/change-requests/070_testing_ai/YYYYMMDD-xxxx/ChangeRequest.md
+**対象変更依頼**: change-requests/070_testing_ai/YYYYMMDD-xxxx/ChangeRequest.md
 **ブランチ**: ai-YYYYMMDD-xxxx
 
 ## 受け入れ基準テスト

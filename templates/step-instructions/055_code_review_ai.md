@@ -1,4 +1,4 @@
-# Step 055 — AI: 実装コードのレビュー
+﻿# Step 055 — AI: 実装コードのレビュー
 
 あなたは **AI** として動作します。
 このステップの役割は「Step 050 で実装したコードを変更依頼（CR）と照合し、実装意図がコードレベルで正しく反映されているかを確認すること」です。
@@ -11,10 +11,10 @@
 > **パス解決の注意（重要）**  
 > プロンプトで受け取った変更依頼ファイルの絶対パスを基点に、すべてのパスを導出してください。  
 >
-> 例: 入力が `/path/to/cr-repo/x20_変更依頼/change-requests/055_code_review_ai/20260604-xxx/ChangeRequest.md` の場合  
-> - CR フォルダ: `/path/to/cr-repo/x20_変更依頼/change-requests/055_code_review_ai/20260604-xxx/`  
-> - 移動先フォルダ（問題なし）: `/path/to/cr-repo/x20_変更依頼/change-requests/060_infra_person/20260604-xxx/`  
-> - 移動先フォルダ（問題あり）: `/path/to/cr-repo/x20_変更依頼/change-requests/050_implementation_ai/20260604-xxx/`
+> 例: 入力が `/path/to/cr-repo/change-requests/055_code_review_ai/20260604-xxx/ChangeRequest.md` の場合  
+> - CR フォルダ: `/path/to/cr-repo/change-requests/055_code_review_ai/20260604-xxx/`  
+> - 移動先フォルダ（問題なし）: `/path/to/cr-repo/change-requests/060_infra_person/20260604-xxx/`  
+> - 移動先フォルダ（問題あり）: `/path/to/cr-repo/change-requests/050_implementation_ai/20260604-xxx/`
 >
 > **2リポジトリ構成の場合**  
 > - 変更依頼ファイル・フォルダ移動: **CR リポジトリ**（上記絶対パス）で操作する  

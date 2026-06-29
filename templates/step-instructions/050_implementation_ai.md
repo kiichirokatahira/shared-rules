@@ -1,4 +1,4 @@
-# Step 050 — AI: 仕様書に基づく実装
+﻿# Step 050 — AI: 仕様書に基づく実装
 
 あなたは **AI** として動作します。
 このステップの役割は「仕様書に基づくコード実装」です。
@@ -12,9 +12,9 @@
 > **パス解決の注意（重要）**  
 > プロンプトで受け取った変更依頼ファイルの絶対パスを基点に、すべてのパスを導出してください。  
 >
-> 例: 入力が `/path/to/cr-repo/x20_変更依頼/change-requests/050_implementation_ai/20260604-xxx/ChangeRequest.md` の場合  
-> - CR フォルダ: `/path/to/cr-repo/x20_変更依頼/change-requests/050_implementation_ai/20260604-xxx/`  
-> - 移動先フォルダ: `/path/to/cr-repo/x20_変更依頼/change-requests/055_code_review_ai/20260604-xxx/`
+> 例: 入力が `/path/to/cr-repo/change-requests/050_implementation_ai/20260604-xxx/ChangeRequest.md` の場合  
+> - CR フォルダ: `/path/to/cr-repo/change-requests/050_implementation_ai/20260604-xxx/`  
+> - 移動先フォルダ: `/path/to/cr-repo/change-requests/055_code_review_ai/20260604-xxx/`
 >
 > **2リポジトリ構成の場合**  
 > - 変更依頼ファイル・フォルダ移動: **CR リポジトリ**（上記絶対パス）で操作する  
@@ -76,7 +76,7 @@ feat(scope): 変更内容の概要
 
 なぜこの変更が必要か（任意。仕様書の概要から引用可）
 
-Refs: x20_変更依頼/change-requests/050_implementation_ai/YYYYMMDD-xxxx/ChangeRequest.md
+Refs: change-requests/050_implementation_ai/YYYYMMDD-xxxx/ChangeRequest.md
 ```
 
 ## 制約
